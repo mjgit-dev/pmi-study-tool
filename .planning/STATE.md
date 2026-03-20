@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-01-PLAN.md (SELECTORS.md)
-last_updated: "2026-03-20T17:30:57.555Z"
+stopped_at: "Checkpoint: Task 2 smoke test in 01-02-PLAN.md"
+last_updated: "2026-03-20T17:34:55.906Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -62,6 +62,7 @@ Recent decisions affecting current work:
 - [Phase 01-extraction]: CommonJS module.exports used in cleaning.js for Node.js+browser dual-compatibility (bookmarklet loads via script tag)
 - [Phase 01-extraction]: node:test chosen over Jest — zero install, built-in Node >= 18, no config required for pure function tests
 - [Phase 01-extraction]: Filler word regex uses word boundaries — protects 'likely'/'unlike' from being mangled by 'like' filter
+- [Phase 01-extraction]: Cue text extracted via [data-purpose='cue-text'] span child for precision; duplicate detection uses localStorage key pmi-extracted-{lectureTitle}
 
 ### Pending Todos
 
@@ -74,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T17:30:57.552Z
-Stopped at: Completed 01-01-PLAN.md (SELECTORS.md)
+Last session: 2026-03-20T17:34:46.522Z
+Stopped at: Checkpoint: Task 2 smoke test in 01-02-PLAN.md
 Resume file: None
