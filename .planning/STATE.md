@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-processing-pipeline/02-01-PLAN.md
-last_updated: "2026-03-20T18:55:02.943Z"
+stopped_at: Completed 02-processing-pipeline/02-02-PLAN.md (paused at Task 2 checkpoint:human-verify)
+last_updated: "2026-03-20T19:08:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 1
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 
 ## Current Position
 
-Phase: 02 (processing-pipeline) — EXECUTING
-Plan: 1 of 2
+Phase: 02 (processing-pipeline) — EXECUTING (paused at checkpoint)
+Plan: 2 of 2 (Task 1 complete, Task 2 awaiting human-verify)
 
 ## Performance Metrics
 
@@ -67,6 +67,8 @@ Recent decisions affecting current work:
 - [Phase 02-processing-pipeline]: shouldSkip returns true only for complete+no-force, false for all other states — orchestrator skip check is a single function call
 - [Phase 02-processing-pipeline]: buildMarkdown uses JSON.stringify for YAML string values — handles special characters safely without a YAML library
 - [Phase 02-processing-pipeline]: System prompt opens with 'Output ONLY the three sections below, starting immediately with ## Key Concepts' — mitigates LLM preamble deviation
+- [Phase 02-processing-pipeline]: processAll accepts outputDir parameter for test isolation — avoids writing to real output/ directory during test runs
+- [Phase 02-processing-pipeline]: Manifest saved after every individual lecture (not batch end) for crash-safe resume on long batches
 
 ### Pending Todos
 
@@ -79,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T18:55:02.940Z
-Stopped at: Completed 02-processing-pipeline/02-01-PLAN.md
+Last session: 2026-03-20T19:08:00.000Z
+Stopped at: 02-02-PLAN.md Task 2 checkpoint:human-verify (smoke test with live Anthropic API)
 Resume file: None

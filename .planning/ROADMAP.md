@@ -13,7 +13,7 @@ Four phases that follow the natural dependency chain of the pipeline: get reliab
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Extraction** - Browser script reliably captures and cleans Udemy transcripts with validation (completed 2026-03-20)
-- [ ] **Phase 2: Processing Pipeline** - Manifest-backed pipeline processes transcripts into structured notes via Anthropic API
+- [x] **Phase 2: Processing Pipeline** - Manifest-backed pipeline processes transcripts into structured notes via Anthropic API (completed 2026-03-20)
 - [ ] **Phase 3: AI Content Generation** - Pipeline extended to produce practice questions and flashcards in a single API call per lecture
 - [ ] **Phase 4: Compilation and Claude Projects Package** - Processed content assembled into section-scoped files, compiled handbook, and system prompt
 
@@ -79,6 +79,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Extraction | 2/2 | Complete   | 2026-03-20 |
-| 2. Processing Pipeline | 1/2 | In Progress|  |
+| 2. Processing Pipeline | 2/2 | Complete   | 2026-03-20 |
 | 3. AI Content Generation | 0/? | Not started | - |
 | 4. Compilation and Claude Projects Package | 0/? | Not started | - |
