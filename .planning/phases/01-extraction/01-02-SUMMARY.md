@@ -49,14 +49,14 @@ completed: 2026-03-20
 
 # Phase 01 Plan 02: Extractor.js and Bookmarklet Package Summary
 
-**Self-executing async bookmarklet script (290 lines) using verified data-purpose DOM selectors to extract, clean, validate, and download Udemy transcripts as JSON; awaiting live smoke test**
+**Self-executing async bookmarklet script (290 lines) using verified data-purpose DOM selectors to extract, clean, validate, and download Udemy transcripts as JSON; smoke-tested on live Udemy and approved**
 
 ## Performance
 
 - **Duration:** ~10 min
 - **Started:** 2026-03-20T17:32:08Z
-- **Completed:** 2026-03-20T17:42:00Z (Task 1 only — Task 2 awaiting human verification)
-- **Tasks:** 1 of 2 complete
+- **Completed:** 2026-03-20
+- **Tasks:** 2 of 2 complete
 - **Files created:** 4
 
 ## Accomplishments
@@ -71,6 +71,8 @@ completed: 2026-03-20
 ## Task Commits
 
 1. **Task 1: Build extractor.js and bookmarklet package** - `d9fd71f` (feat)
+2. **Task 2: Smoke test on live Udemy lecture** - approved by user (no code commit — verification only)
+3. **Bug fix: bookmarklet.txt %0A → space** - `920fac0` (fix) — Firefox SyntaxError caused by literal newline in URL-encoded bookmarklet alert string
 
 ## Files Created/Modified
 
@@ -86,9 +88,28 @@ completed: 2026-03-20
 - `localStorage` key is `pmi-extracted-{lectureTitle}` — warns on duplicate but continues (does not block)
 - Panel polling uses 10 x 100ms intervals to allow React to render after toggle click
 
+## Smoke Test Results (Task 2)
+
+Tested on a live Udemy lecture. All checks passed:
+
+- Toast notification appears (green success)
+- JSON file downloads with all 7 required fields: `lectureTitle`, `sectionName`, `transcript`, `wordCount`, `extractedAt`, `captionType`, `language`
+- Transcript is clean — no timestamps, no filler words, sentences joined — 1649 words
+- Duplicate detection works — fires warning toast, then overwritten by success toast (minor UX issue, not a blocker)
+- Error toast appears correctly on non-lecture pages
+
+**Status: Approved**
+
 ## Deviations from Plan
 
-None — plan executed exactly as written.
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] Fixed Firefox SyntaxError in bookmarklet.txt**
+- **Found during:** Post-Task-1 testing
+- **Issue:** `%0A` (URL-encoded newline) in the bookmarklet alert string caused a SyntaxError in Firefox — literal newlines are not valid inside a JS string in a `javascript:` URL
+- **Fix:** Replaced `%0A` with a space character in the alert string inside `bookmarklet.txt`
+- **Files modified:** `extractor/bookmarklet.txt`
+- **Commit:** `920fac0`
 
 ## Self-Check: PASSED
 
@@ -101,7 +122,7 @@ None — plan executed exactly as written.
 
 ## Status
 
-Task 2 (smoke test on live Udemy lecture) is awaiting human verification. See checkpoint details in the return message.
+Complete. Both tasks executed and verified. Phase 01-extraction is fully done.
 
 ---
 *Phase: 01-extraction*

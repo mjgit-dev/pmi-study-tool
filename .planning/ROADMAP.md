@@ -31,8 +31,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Discover live Udemy DOM selectors and build the tested transcript cleaning module
-- [ ] 01-02-PLAN.md — Build the complete extractor.js and bookmarklet installation package
+- [x] 01-01-PLAN.md — Discover live Udemy DOM selectors and build the tested transcript cleaning module
+- [x] 01-02-PLAN.md — Build the complete extractor.js and bookmarklet installation package
 
 ### Phase 2: Processing Pipeline
 **Goal**: Users can run a single CLI command to process any number of raw transcript JSON files into structured notes markdown, with a manifest that tracks status and enables resume on failure
