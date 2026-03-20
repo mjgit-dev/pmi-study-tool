@@ -1,0 +1,78 @@
+# Requirements: PMI Study Tool
+
+**Defined:** 2026-03-20
+**Core Value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
+
+## v1 Requirements
+
+### Extraction
+
+- [ ] **EXTR-01**: User can run a browser script in Udemy DevTools to capture the transcript and metadata (section name, lecture title) for the current lecture
+- [ ] **EXTR-02**: Extracted transcripts are automatically cleaned (timestamps stripped, caption segments joined into readable sentences)
+- [ ] **EXTR-03**: Extraction validates word count and flags captures under 300 words as likely failures
+
+### Processing
+
+- [ ] **PROC-01**: Pipeline processes raw transcript JSON through Anthropic API to produce structured notes (key concepts, summary, examples) per lecture
+- [ ] **PROC-02**: Pipeline generates PMP scenario-based practice questions (4-option, situational) with explained answers per lecture
+- [ ] **PROC-03**: Pipeline generates flashcard content (term → definition pairs) per lecture
+- [ ] **PROC-04**: A processing manifest tracks status (pending/complete/failed) per lecture and enables resume on failure without reprocessing completed lectures
+- [ ] **PROC-05**: All content types (notes, questions, flashcards) are generated in a single API call per lecture to minimize cost
+
+### Output
+
+- [ ] **OUTP-01**: Processed content is assembled into one markdown file per course section (not per lecture) optimized for Claude Projects ingestion
+- [ ] **OUTP-02**: A compiled handbook is generated as a single reference document with a linked table of contents
+- [ ] **OUTP-03**: A Claude Projects system prompt file is generated, instructing Claude how to quiz and assist with PMP study
+
+## v2 Requirements
+
+### Enhanced Processing
+
+- **ENHA-01**: PMI Exam Content Outline (ECO) domain tagging per lecture (People 42%, Process 50%, Business Environment 8%)
+- **ENHA-02**: Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference
+- **ENHA-03**: Processing cost estimate displayed before any batch run begins
+
+### Study Intelligence
+
+- **STDY-01**: Weak-area hint injection — system prompt includes guidance for Claude to focus on topics the user has struggled with
+- **STDY-02**: Examples bank — real-world scenario examples per concept, separate from practice questions
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Custom chat UI | Claude Projects is the study interface — don't rebuild it |
+| Per-lecture output files | Section-scoped files (8–12) perform better in Claude Projects than 100+ files |
+| Automatic Claude Projects upload | No public API exists for programmatic upload |
+| Video/audio capture | Transcripts are sufficient; video capture is ToS risk |
+| Mobile app | Desktop workflow |
+| User accounts / auth | Single-user local tool |
+| Real-time transcript capture | Batch processing is sufficient |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| EXTR-01 | — | Pending |
+| EXTR-02 | — | Pending |
+| EXTR-03 | — | Pending |
+| PROC-01 | — | Pending |
+| PROC-02 | — | Pending |
+| PROC-03 | — | Pending |
+| PROC-04 | — | Pending |
+| PROC-05 | — | Pending |
+| OUTP-01 | — | Pending |
+| OUTP-02 | — | Pending |
+| OUTP-03 | — | Pending |
+
+**Coverage:**
+- v1 requirements: 11 total
+- Mapped to phases: 0
+- Unmapped: 11 ⚠️
+
+---
+*Requirements defined: 2026-03-20*
+*Last updated: 2026-03-20 after initial definition*
