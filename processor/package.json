@@ -1,0 +1,12 @@
+{
+  "name": "pmi-processor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Batch transcript processor for PMI study tool",
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0"
+  }
+}
