@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-processing-pipeline/02-02-PLAN.md (paused at Task 2 checkpoint:human-verify)
-last_updated: "2026-03-20T19:08:00.000Z"
+stopped_at: Completed 02-processing-pipeline/02-02-PLAN.md
+last_updated: "2026-03-20T19:43:05.681Z"
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Plan: 2 of 2 (Task 1 complete, Task 2 awaiting human-verify)
 *Updated after each plan completion*
 | Phase 01-extraction P01 | 20 | 1 tasks | 3 files |
 | Phase 02-processing-pipeline P01 | 3 | 3 tasks | 9 files |
+| Phase 02-processing-pipeline P02 | 50 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,9 @@ Recent decisions affecting current work:
 - [Phase 02-processing-pipeline]: System prompt opens with 'Output ONLY the three sections below, starting immediately with ## Key Concepts' — mitigates LLM preamble deviation
 - [Phase 02-processing-pipeline]: processAll accepts outputDir parameter for test isolation — avoids writing to real output/ directory during test runs
 - [Phase 02-processing-pipeline]: Manifest saved after every individual lecture (not batch end) for crash-safe resume on long batches
+- [Phase 02-processing-pipeline]: processAll accepts outputDir parameter for test isolation — avoids writing to real output/ during test runs
+- [Phase 02-processing-pipeline]: Manifest saved after every individual lecture (not batch end) for crash-safe resume on long batches
+- [Phase 02-processing-pipeline]: require.main === module guard isolates CLI entry point from module imports during tests
 
 ### Pending Todos
 
@@ -81,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T19:08:00.000Z
-Stopped at: 02-02-PLAN.md Task 2 checkpoint:human-verify (smoke test with live Anthropic API)
+Last session: 2026-03-20T19:43:05.678Z
+Stopped at: Completed 02-processing-pipeline/02-02-PLAN.md
 Resume file: None

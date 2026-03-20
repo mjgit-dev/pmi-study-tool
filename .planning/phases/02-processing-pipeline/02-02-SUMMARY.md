@@ -12,6 +12,8 @@ provides:
   - processor.js CLI tool that orchestrates batch transcript-to-markdown processing
   - Integration test suite with mocked Anthropic client covering all batch behaviors
   - Sample transcript JSON files in transcripts/ for smoke testing
+  - processor/output/*.md — generated study notes from live Anthropic API smoke test
+  - processor/processing-state.json — manifest tracking lecture completion status
 affects: [phase-03, phase-04]
 
 # Tech tracking
@@ -29,6 +31,9 @@ key-files:
     - processor/tests/processor.test.js
     - transcripts/what-is-a-project.json
     - transcripts/project-life-cycle.json
+    - processor/output/what-is-a-project.md
+    - processor/output/project-life-cycle.md
+    - processor/processing-state.json
   modified: []
 
 key-decisions:
@@ -43,28 +48,29 @@ patterns-established:
 requirements-completed: [PROC-01, PROC-04, PROC-05]
 
 # Metrics
-duration: 10min
+duration: 50min
 completed: 2026-03-20
 ---
 
 # Phase 02 Plan 02: Processor CLI Orchestrator Summary
 
-**processor.js CLI with mock-tested batch loop: skip/force/dry-run/error-handling verified by 5 integration tests, all 40 test suite assertions passing**
+**processor.js CLI with mock-tested batch loop (5 tests, 40 assertions) plus live Anthropic API smoke test: 2 transcripts processed into structured YAML frontmatter + Key Concepts + Summary + Examples markdown**
 
 ## Performance
 
-- **Duration:** ~10 min
+- **Duration:** ~50 min
 - **Started:** 2026-03-20T18:56:21Z
-- **Completed:** 2026-03-20T19:06:00Z
-- **Tasks:** 1 of 2 complete (Task 2 is a human-verify checkpoint)
-- **Files modified:** 4
+- **Completed:** 2026-03-20T19:35:45Z
+- **Tasks:** 2 of 2 complete
+- **Files modified:** 7
 
 ## Accomplishments
 
 - processor.js orchestrator with sequential batch loop, manifest tracking, and full CLI arg parsing
 - 5 integration tests with injected mock client covering all behavioral requirements
 - Full 40-test suite passes (manifest + prompt + markdown + processor)
-- Sample transcripts created for smoke test against live Anthropic API
+- Live Anthropic API smoke test: 2 transcripts processed successfully with correct output structure (YAML frontmatter + Key Concepts + Summary + Examples)
+- Manifest tracking confirmed: both lectures show "status": "complete"; re-run skip behavior verified
 
 ## Task Commits
 
@@ -73,10 +79,9 @@ Each task was committed atomically:
 1. **Task 1 (RED): Failing integration tests** - `c315a08` (test)
 2. **Task 1 (GREEN): processor.js implementation** - `a7c53de` (feat)
 3. **Task 1 (support): Sample transcript fixtures** - `f0e9cc7` (chore)
+4. **Task 2: Checkpoint metadata** - `ab8009f` (docs)
 
-**Plan metadata:** (pending — created after checkpoint resolution)
-
-_Note: TDD tasks have multiple commits (test RED → feat GREEN)_
+_Note: TDD tasks have multiple commits (test RED → feat GREEN). Task 2 was a human-verify checkpoint — no code changes, only smoke test run against live Anthropic API._
 
 ## Files Created/Modified
 
@@ -84,6 +89,9 @@ _Note: TDD tasks have multiple commits (test RED → feat GREEN)_
 - `processor/tests/processor.test.js` — 5 integration tests using mock Anthropic client
 - `transcripts/what-is-a-project.json` — Sample transcript for smoke test (102 words)
 - `transcripts/project-life-cycle.json` — Sample transcript for smoke test (110 words)
+- `processor/output/what-is-a-project.md` — Generated study notes from live API smoke test
+- `processor/output/project-life-cycle.md` — Generated study notes from live API smoke test
+- `processor/processing-state.json` — Manifest showing both lectures as "complete"
 
 ## Decisions Made
 
@@ -109,9 +117,10 @@ To run the smoke test (Task 2 checkpoint):
 
 ## Next Phase Readiness
 
-- processor.js is fully functional and tested — ready for real API smoke test (Task 2 human-verify)
-- After Task 2 approval, Phase 02 is complete
-- Phase 03 (study notes compilation) can use processor/output/*.md files as input
+- Full processing pipeline is complete and verified end-to-end against live Anthropic API
+- processor/output/ contains 2 sample .md files ready for Phase 03 consumption
+- Manifest tracking enables Phase 03 to safely identify completed transcripts
+- Phase 03 (study notes compilation / question generation) can import the same dependency injection pattern used in processAll
 
 ---
 *Phase: 02-processing-pipeline*
