@@ -10,7 +10,7 @@ provides:
   - "extractor/cleaning.js: pure functions cleanTranscript, countWords, toFilename"
   - "extractor/tests/extractor.test.js: 28 unit tests covering all cleaning behaviors"
   - "extractor/tests/fixtures/sample-transcript.html: Udemy DOM mock for Plan 02"
-  - "extractor/SELECTORS.md: PENDING — blocked on human DOM inspection (Task 1 checkpoint)"
+  - "extractor/SELECTORS.md: verified Udemy DOM selectors from live DevTools inspection (2026-03-20)"
 affects:
   - "01-extraction/01-02 (extractor.js implementation depends on cleaning.js and SELECTORS.md)"
 
@@ -59,8 +59,8 @@ completed: 2026-03-20
 - **Duration:** ~20 min
 - **Started:** 2026-03-20T17:10:00Z
 - **Completed:** 2026-03-20T17:30:00Z
-- **Tasks:** 1 of 2 complete (Task 1 blocked on human DOM inspection checkpoint)
-- **Files modified:** 3 created
+- **Tasks:** 2 of 2 complete
+- **Files modified:** 4 created
 
 ## Accomplishments
 - Built complete transcript cleaning pipeline as pure CommonJS functions, testable in Node.js without any DOM simulator
@@ -75,9 +75,7 @@ Each task was committed atomically:
 1. **Task 2 RED: Failing tests for cleaning module** - `38d7adb` (test)
 2. **Task 2 GREEN: cleaning.js implementation + fixtures** - `b52e44d` (feat)
 
-Task 1 (SELECTORS.md) is pending human action — see checkpoint below.
-
-**Plan metadata:** (to be committed after SELECTORS.md is completed)
+3. **Task 1: SELECTORS.md from live DOM inspection** - `1d113eb` (feat)
 
 _Note: TDD tasks have two commits (RED: failing tests, GREEN: implementation)_
 
@@ -85,6 +83,7 @@ _Note: TDD tasks have two commits (RED: failing tests, GREEN: implementation)_
 - `extractor/cleaning.js` - Pure functions: cleanTranscript, countWords, toFilename; CommonJS exports
 - `extractor/tests/extractor.test.js` - 28 unit tests via node:test covering all cleaning behaviors
 - `extractor/tests/fixtures/sample-transcript.html` - 14-cue mock of Udemy transcript panel DOM
+- `extractor/SELECTORS.md` - Verified Udemy DOM selectors from live DevTools inspection (2026-03-20)
 
 ## Decisions Made
 - CommonJS (not ESM) for cleaning.js — must load via script tag in browser context; node:test works without config
@@ -94,28 +93,16 @@ _Note: TDD tasks have two commits (RED: failing tests, GREEN: implementation)_
 
 ## Deviations from Plan
 
-None — plan executed exactly as specified for Task 2. Task 1 is a human-action checkpoint, not a deviation.
+None — plan executed exactly as written. Task 1 was a human-action checkpoint that completed via user-provided DevTools inspection output.
 
 ## Issues Encountered
-None — all 28 tests pass on first GREEN run. Node.js v24.14.0 fully supports node:test.
-
-## User Setup Required
-
-**Task 1 (SELECTORS.md) requires human DOM inspection.** Steps:
-
-1. Open any Udemy lecture you own that has transcript available
-2. Open the transcript panel manually
-3. Open DevTools console (F12 -> Console tab)
-4. Paste and run the snippet from the plan (01-01-PLAN.md Task 1)
-5. Copy the full console output and provide it here
-
-Claude will then write `extractor/SELECTORS.md` with all verified selectors and commit it.
+None — all 28 tests pass. SELECTORS.md written directly from verified live inspection output.
 
 ## Next Phase Readiness
 - cleaning.js is complete and importable — Plan 02 (extractor.js) can import it immediately
-- SELECTORS.md must be completed before extractor.js can be written (DOM selectors required)
-- Plan 02 will be blocked until Task 1 is resolved
+- SELECTORS.md is complete with all required selectors — Plan 02 extractor.js can be written
+- All blockers for Plan 02 are resolved
 
 ---
 *Phase: 01-extraction*
-*Completed: 2026-03-20 (partial — Task 1 pending checkpoint)*
+*Completed: 2026-03-20*
