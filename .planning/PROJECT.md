@@ -12,18 +12,17 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Browser script extracts transcripts from Udemy course player automatically — Validated in Phase 1: Extraction
+- [x] Raw transcripts are processed into structured notes (key concepts, summaries, examples) — Validated in Phase 2: Processing Pipeline
+- [x] PMP exam-style practice questions are generated per topic (scenario-based, with reasoning) — Validated in Phase 3: AI Content Generation
+- [x] Flashcard-style content is generated for key terms and concepts — Validated in Phase 3: AI Content Generation
+- [x] Processing pipeline handles 100+ transcripts without manual intervention — Validated in Phase 2 & 3
 
 ### Active
 
-- [ ] Browser script extracts transcripts from Udemy course player automatically
-- [ ] Raw transcripts are processed into structured notes (key concepts, summaries, examples)
 - [ ] Output is organized as clean markdown optimized for Claude Projects upload
 - [ ] A compiled handbook (single reference document) is generated from all processed content
-- [ ] PMP exam-style practice questions are generated per topic (scenario-based, with reasoning)
-- [ ] Flashcard-style content is generated for key terms and concepts
 - [ ] Content is organized by course section/module to mirror the Udemy structure
-- [ ] Processing pipeline handles 100+ transcripts without manual intervention
 
 ### Out of Scope
 
@@ -60,4 +59,4 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 | Markdown as primary output format | Claude Projects ingests markdown well; portable to other tools | — Pending |
 
 ---
-*Last updated: 2026-03-20 after initialization*
+*Last updated: 2026-03-21 — Phase 3 complete: AI content generation (Practice Questions + Flashcards)*
