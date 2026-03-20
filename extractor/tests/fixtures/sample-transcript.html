@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+  sample-transcript.html
+  Mock of Udemy transcript panel DOM structure for reference in Plan 02.
+  Reflects the expected shape of the ct-sidebar-scroll-container content.
+  Selectors used here are candidates pending live DOM verification (SELECTORS.md, Plan 01 Task 1).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sample Udemy Transcript Fixture</title>
+</head>
+<body>
+
+<!-- Outer sidebar container (ID-based selector — higher stability) -->
+<div id="ct-sidebar-scroll-container">
+
+  <!-- Transcript panel (CSS Modules partial-match selector: div[class*="transcript--transcript-panel"]) -->
+  <div class="transcript--transcript-panel--Hx2e1" data-purpose="transcript-panel">
+
+    <!-- Each cue is expected to have a timestamp element + text element.
+         data-purpose values below are candidates — verify via DOM inspection. -->
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:04</span>
+      <p class="transcript--cue-text--ghi56">Welcome to this course on project management fundamentals.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:08</span>
+      <p class="transcript--cue-text--ghi56">In this lecture we'll cover the basics of what a project actually is</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:14</span>
+      <p class="transcript--cue-text--ghi56">and um why project management is important for organizations.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:20</span>
+      <p class="transcript--cue-text--ghi56">A project is basically a temporary endeavor undertaken to create a unique product or service.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:28</span>
+      <p class="transcript--cue-text--ghi56">It has a defined beginning and end date, right, unlike ongoing operations.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:35</span>
+      <p class="transcript--cue-text--ghi56">You know, the PMI defines a project as having three key characteristics.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:41</span>
+      <p class="transcript--cue-text--ghi56">First, it is temporary — it has a start and an end.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:47</span>
+      <p class="transcript--cue-text--ghi56">Second, it produces a unique deliverable — a product, service, or result.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">0:54</span>
+      <p class="transcript--cue-text--ghi56">Third, it is progressively elaborated — uh the plan evolves as you learn more.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">1:02</span>
+      <p class="transcript--cue-text--ghi56">Let's look at some examples of projects you might encounter in your career.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">1:09</span>
+      <p class="transcript--cue-text--ghi56">Building a bridge, launching a software product, or implementing a new business process</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">1:17</span>
+      <p class="transcript--cue-text--ghi56">are all literally examples of projects with defined scope and goals.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">1:24</span>
+      <p class="transcript--cue-text--ghi56">Operations, on the other hand, are ongoing and repetitive — like running a factory.</p>
+    </div>
+
+    <div class="transcript--cue-container--abc12" data-purpose="transcript-cue">
+      <span class="transcript--cue-timestamp--def34">1:32</span>
+      <p class="transcript--cue-text--ghi56">In the next section we will explore the project lifecycle and the five process groups.</p>
+    </div>
+
+  </div><!-- end transcript panel -->
+
+</div><!-- end sidebar container -->
+
+<!--
+  Reference selectors captured above (candidates — unverified, pending Task 1):
+
+  Panel:     div[class*="transcript--transcript-panel"]
+  Sidebar:   #ct-sidebar-scroll-container
+  Cues:      [data-purpose="transcript-cue"]
+  Timestamp: span[class*="transcript--cue-timestamp"]  (or first child of cue container)
+  Cue text:  p[class*="transcript--cue-text"]           (or first <p> child of cue container)
+
+  In extractor.js, the safest approach is:
+    const cues = sidebar.querySelectorAll('[data-purpose="transcript-cue"] p');
+  OR (if data-purpose not present on cue elements):
+    const cues = sidebar.querySelectorAll('p');
+-->
+
+</body>
+</html>
