@@ -2,16 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-03-20T15:36:37.035Z"
-last_activity: 2026-03-20 — Roadmap created, requirements mapped, STATE.md initialized
+status: unknown
+stopped_at: "01-01 Task 1 checkpoint: awaiting human DOM inspection (SELECTORS.md)"
+last_updated: "2026-03-20T17:13:50.629Z"
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -21,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
-**Current focus:** Phase 1 - Extraction
+**Current focus:** Phase 01 — extraction
 
 ## Current Position
 
-Phase: 1 of 4 (Extraction)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-20 — Roadmap created, requirements mapped, STATE.md initialized
-
-Progress: [░░░░░░░░░░] 0%
+Phase: 01 (extraction) — EXECUTING
+Plan: 1 of 2
 
 ## Performance Metrics
 
@@ -52,6 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-extraction P01 | 20 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -64,6 +59,9 @@ Recent decisions affecting current work:
 - [Roadmap]: Processing manifest is a Phase 2 prerequisite — no batch processing without durable state tracking
 - [Roadmap]: Single API call per lecture for all content types (notes + questions + flashcards) — avoids 3x token cost at 100+ lecture scale
 - [Roadmap]: Output compiled to one file per course section (8-12 files) — per-lecture files degrade Claude Projects retrieval quality
+- [Phase 01-extraction]: CommonJS module.exports used in cleaning.js for Node.js+browser dual-compatibility (bookmarklet loads via script tag)
+- [Phase 01-extraction]: node:test chosen over Jest — zero install, built-in Node >= 18, no config required for pure function tests
+- [Phase 01-extraction]: Filler word regex uses word boundaries — protects 'likely'/'unlike' from being mangled by 'like' filter
 
 ### Pending Todos
 
@@ -76,6 +74,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T15:36:37.032Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-extraction/01-CONTEXT.md
+Last session: 2026-03-20T17:13:41.551Z
+Stopped at: 01-01 Task 1 checkpoint: awaiting human DOM inspection (SELECTORS.md)
+Resume file: None

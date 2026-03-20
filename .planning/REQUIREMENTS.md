@@ -8,8 +8,8 @@
 ### Extraction
 
 - [ ] **EXTR-01**: User can run a browser script in Udemy DevTools to capture the transcript and metadata (section name, lecture title) for the current lecture
-- [ ] **EXTR-02**: Extracted transcripts are automatically cleaned (timestamps stripped, caption segments joined into readable sentences)
-- [ ] **EXTR-03**: Extraction validates word count and flags captures under 300 words as likely failures
+- [x] **EXTR-02**: Extracted transcripts are automatically cleaned (timestamps stripped, caption segments joined into readable sentences)
+- [x] **EXTR-03**: Extraction validates word count and flags captures under 300 words as likely failures
 
 ### Processing
 
@@ -57,8 +57,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | EXTR-01 | Phase 1 | Pending |
-| EXTR-02 | Phase 1 | Pending |
-| EXTR-03 | Phase 1 | Pending |
+| EXTR-02 | Phase 1 | Complete |
+| EXTR-03 | Phase 1 | Complete |
 | PROC-01 | Phase 2 | Pending |
 | PROC-04 | Phase 2 | Pending |
 | PROC-05 | Phase 2 | Pending |
