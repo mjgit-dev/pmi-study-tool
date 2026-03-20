@@ -56,23 +56,23 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EXTR-01 | — | Pending |
-| EXTR-02 | — | Pending |
-| EXTR-03 | — | Pending |
-| PROC-01 | — | Pending |
-| PROC-02 | — | Pending |
-| PROC-03 | — | Pending |
-| PROC-04 | — | Pending |
-| PROC-05 | — | Pending |
-| OUTP-01 | — | Pending |
-| OUTP-02 | — | Pending |
-| OUTP-03 | — | Pending |
+| EXTR-01 | Phase 1 | Pending |
+| EXTR-02 | Phase 1 | Pending |
+| EXTR-03 | Phase 1 | Pending |
+| PROC-01 | Phase 2 | Pending |
+| PROC-04 | Phase 2 | Pending |
+| PROC-05 | Phase 2 | Pending |
+| PROC-02 | Phase 3 | Pending |
+| PROC-03 | Phase 3 | Pending |
+| OUTP-01 | Phase 4 | Pending |
+| OUTP-02 | Phase 4 | Pending |
+| OUTP-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 11 total
-- Mapped to phases: 0
-- Unmapped: 11 ⚠️
+- Mapped to phases: 11
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-20*
-*Last updated: 2026-03-20 after initial definition*
+*Last updated: 2026-03-20 after roadmap creation — traceability complete*
