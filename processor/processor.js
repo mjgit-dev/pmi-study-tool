@@ -71,8 +71,8 @@ async function processAll(inputDir, flags, client, manifestPath, outputDir) {
       const transcript = JSON.parse(fs.readFileSync(path.join(resolvedInput, file), 'utf8'));
       const { system, messages } = buildMessages(transcript);
       const response = await client.messages.create({
-        model: process.env.PMI_MODEL || 'claude-haiku-4-5',
-        max_tokens: 2048,
+        model: process.env.PMI_MODEL || 'claude-sonnet-4-6',
+        max_tokens: 4096,
         system: system,
         messages: messages
       });

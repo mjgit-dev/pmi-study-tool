@@ -53,19 +53,19 @@ describe('buildMessages', () => {
     assert.ok(messages[0].content.length > 0, 'Message content should not be empty');
   });
 
-  it('system prompt contains "## Key Concepts" header instruction', () => {
+  it('system prompt instructs to use ## H2 headings per topic', () => {
     const { system } = buildMessages(sampleTranscript);
-    assert.ok(system.includes('## Key Concepts'), 'System prompt should contain "## Key Concepts"');
+    assert.ok(system.includes('## H2'), 'System prompt should reference ## H2 headings');
   });
 
-  it('system prompt contains "## Summary" header instruction', () => {
+  it('system prompt instructs to add Exam Tip callouts', () => {
     const { system } = buildMessages(sampleTranscript);
-    assert.ok(system.includes('## Summary'), 'System prompt should contain "## Summary"');
+    assert.ok(system.includes('Exam Tip'), 'System prompt should contain "Exam Tip" instruction');
   });
 
-  it('system prompt contains "## Examples" header instruction', () => {
+  it('system prompt instructs to add Bottom line per section', () => {
     const { system } = buildMessages(sampleTranscript);
-    assert.ok(system.includes('## Examples'), 'System prompt should contain "## Examples"');
+    assert.ok(system.includes('Bottom line'), 'System prompt should contain "Bottom line" instruction');
   });
 
   it('system prompt instructs to output ONLY those three sections with no preamble', () => {
@@ -111,7 +111,7 @@ describe('buildMessages', () => {
     assert.ok(messages[0].content.includes('Stakeholder Management'), 'Should include different lectureTitle');
     assert.ok(messages[0].content.includes('People Domain'), 'Should include different sectionName');
     assert.ok(messages[0].content.includes('Stakeholders are individuals'), 'Should include different transcript');
-    assert.ok(system.includes('## Key Concepts'), 'System prompt should still have Key Concepts header');
+    assert.ok(system.includes('Exam Tip'), 'System prompt should still have Exam Tip instruction');
   });
 
 });
