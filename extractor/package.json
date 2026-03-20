@@ -1,0 +1,11 @@
+{
+  "name": "pmi-extractor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Udemy transcript extractor bookmarklet for PMI study tool",
+  "scripts": {
+    "serve": "python -m http.server 8765",
+    "serve:npx": "npx http-server . -p 8765 -c-1",
+    "test": "node --test tests/extractor.test.js"
+  }
+}
