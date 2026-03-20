@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 3 context gathered
-last_updated: "2026-03-20T22:24:02.767Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-20T22:53:52.692Z"
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
-**Current focus:** Phase 02 — processing-pipeline
+**Current focus:** Phase 03 — ai-content-generation
 
 ## Current Position
 
-Phase: 02 (processing-pipeline) — EXECUTING (paused at checkpoint)
-Plan: 2 of 2 (Task 1 complete, Task 2 awaiting human-verify)
+Phase: 03 (ai-content-generation) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: 2 of 2 (Task 1 complete, Task 2 awaiting human-verify)
 | Phase 01-extraction P01 | 20 | 1 tasks | 3 files |
 | Phase 02-processing-pipeline P01 | 3 | 3 tasks | 9 files |
 | Phase 02-processing-pipeline P02 | 50 | 2 tasks | 7 files |
+| Phase 03-ai-content-generation P01 | 136 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 02-processing-pipeline]: processAll accepts outputDir parameter for test isolation — avoids writing to real output/ during test runs
 - [Phase 02-processing-pipeline]: Manifest saved after every individual lecture (not batch end) for crash-safe resume on long batches
 - [Phase 02-processing-pipeline]: require.main === module guard isolates CLI entry point from module imports during tests
+- [Phase 03-ai-content-generation]: Append Practice Questions and Flashcards instructions at end of system prompt — preserves existing test assertions on Output ONLY, Exam Tip, and Bottom line
+- [Phase 03-ai-content-generation]: max_tokens increased from 4096 to 8192 to accommodate ~550 extra tokens per lecture for new content types
 
 ### Pending Todos
 
@@ -85,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T22:24:02.764Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-ai-content-generation/03-CONTEXT.md
+Last session: 2026-03-20T22:53:52.689Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: None

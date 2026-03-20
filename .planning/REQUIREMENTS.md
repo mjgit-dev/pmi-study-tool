@@ -14,8 +14,8 @@
 ### Processing
 
 - [x] **PROC-01**: Pipeline processes raw transcript JSON through Anthropic API to produce structured notes (key concepts, summary, examples) per lecture
-- [ ] **PROC-02**: Pipeline generates PMP scenario-based practice questions (4-option, situational) with explained answers per lecture
-- [ ] **PROC-03**: Pipeline generates flashcard content (term → definition pairs) per lecture
+- [x] **PROC-02**: Pipeline generates PMP scenario-based practice questions (4-option, situational) with explained answers per lecture
+- [x] **PROC-03**: Pipeline generates flashcard content (term → definition pairs) per lecture
 - [x] **PROC-04**: A processing manifest tracks status (pending/complete/failed) per lecture and enables resume on failure without reprocessing completed lectures
 - [x] **PROC-05**: All content types (notes, questions, flashcards) are generated in a single API call per lecture to minimize cost
 
@@ -62,8 +62,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROC-01 | Phase 2 | Complete |
 | PROC-04 | Phase 2 | Complete |
 | PROC-05 | Phase 2 | Complete |
-| PROC-02 | Phase 3 | Pending |
-| PROC-03 | Phase 3 | Pending |
+| PROC-02 | Phase 3 | Complete |
+| PROC-03 | Phase 3 | Complete |
 | OUTP-01 | Phase 4 | Pending |
 | OUTP-02 | Phase 4 | Pending |
 | OUTP-03 | Phase 4 | Pending |
