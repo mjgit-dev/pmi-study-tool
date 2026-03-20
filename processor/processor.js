@@ -72,7 +72,7 @@ async function processAll(inputDir, flags, client, manifestPath, outputDir) {
       const { system, messages } = buildMessages(transcript);
       const response = await client.messages.create({
         model: process.env.PMI_MODEL || 'claude-sonnet-4-6',
-        max_tokens: 4096,
+        max_tokens: 8192,
         system: system,
         messages: messages
       });

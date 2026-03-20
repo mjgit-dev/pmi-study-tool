@@ -9,8 +9,7 @@
  * Constructs the system prompt and user message for a single Anthropic API call.
  * Returns a { system, messages } object compatible with the Anthropic SDK messages.create() call.
  *
- * The system prompt instructs Claude to output exactly three sections:
- *   ## Key Concepts, ## Summary, ## Examples
+ * The system prompt instructs Claude to output study notes sections plus Practice Questions and Flashcards
  * with no preamble or additional text.
  *
  * @param {Object} transcript - Transcript JSON object from the Phase 1 extractor
@@ -57,7 +56,41 @@ Use ## H2 headings for each distinct topic or concept covered. Under each ## sec
 - Bold all term names on first use
 - Mix prose paragraphs and lists — do not reduce everything to bullets
 - Prefer depth over brevity — these are reference notes, not a summary
-- Every ## section gets its own **Bottom line:** — do not batch them at the end`;
+- Every ## section gets its own **Bottom line:** — do not batch them at the end
+
+## Practice Questions
+
+After your topic notes, output a ## Practice Questions section with exactly 3 scenario-based PMP questions.
+
+Rules for practice questions:
+- Each question MUST be grounded in a specific concept, term, example, or scenario from THIS lecture's transcript
+- The scenario setup must reference something the instructor described in this lecture — a process, constraint, or situation
+- Do NOT write generic PMBOK recall questions or questions answerable without this specific lecture
+- Format exactly as shown:
+
+Q1. [scenario grounded in this lecture]
+A) [option]
+B) [option]
+C) [option]
+D) [option]
+
+**Answer: X** — [Why X is correct. Why each wrong option is wrong.]
+
+Q2. [scenario]
+...
+Q3. [scenario]
+...
+
+## Flashcards
+
+After the practice questions, output a ## Flashcards section with 5-8 term/definition pairs.
+
+Rules for flashcards:
+- Prioritize PMP-specific terms, PMI definitions, and concepts the instructor explicitly named in this lecture
+- Each definition: 1-2 sentences, precise enough to quiz from
+- Format as a bullet list:
+
+- **Term** — definition.`;
 
   const user = `Create detailed study notes for this PMP lecture. Cover every concept taught.
 
