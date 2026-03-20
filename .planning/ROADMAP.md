@@ -39,11 +39,15 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: PROC-01, PROC-04, PROC-05
 **Success Criteria** (what must be TRUE):
-  1. User can run the processor on a batch of 5–10 transcripts and receive per-lecture markdown files containing key concepts, a summary, and examples
+  1. User can run the processor on a batch of 5-10 transcripts and receive per-lecture markdown files containing key concepts, a summary, and examples
   2. A processing manifest file (processing-state.json) exists after each run, showing pending/complete/failed status per lecture
   3. Re-running the processor after a mid-batch failure skips already-completed lectures and only reprocesses failures — no duplicate API calls
   4. All content types requested from the API are generated in a single call per lecture (not separate calls for notes, questions, and flashcards)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Build manifest, prompt, and markdown pure-function modules with TDD tests
+- [ ] 02-02-PLAN.md — Wire orchestrator CLI (processor.js) and smoke test with real API
 
 ### Phase 3: AI Content Generation
 **Goal**: Users can process the full course and receive complete per-lecture content — notes, scenario-based PMP practice questions, and flashcard term/definition pairs — with processing-state.json showing 100% completion
@@ -75,6 +79,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Extraction | 2/2 | Complete   | 2026-03-20 |
-| 2. Processing Pipeline | 0/? | Not started | - |
+| 2. Processing Pipeline | 0/2 | Planned | - |
 | 3. AI Content Generation | 0/? | Not started | - |
 | 4. Compilation and Claude Projects Package | 0/? | Not started | - |
