@@ -28,7 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Extracted transcript text has timestamps stripped and caption segments joined into readable sentences (not raw caption fragments)
   3. The script outputs a word count per capture and visibly flags any transcript under 300 words as a likely extraction failure
   4. The script uses stable DOM selectors (data-* attributes or aria-label values) so it does not break when Udemy deploys a React update
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Discover live Udemy DOM selectors and build the tested transcript cleaning module
+- [ ] 01-02-PLAN.md — Build the complete extractor.js and bookmarklet installation package
 
 ### Phase 2: Processing Pipeline
 **Goal**: Users can run a single CLI command to process any number of raw transcript JSON files into structured notes markdown, with a manifest that tracks status and enables resume on failure
@@ -70,7 +74,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Extraction | 0/? | Not started | - |
+| 1. Extraction | 0/2 | Ready to execute | - |
 | 2. Processing Pipeline | 0/? | Not started | - |
 | 3. AI Content Generation | 0/? | Not started | - |
 | 4. Compilation and Claude Projects Package | 0/? | Not started | - |
