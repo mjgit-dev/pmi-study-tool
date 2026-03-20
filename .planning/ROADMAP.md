@@ -58,7 +58,11 @@ Plans:
   2. Every processed lecture's markdown file contains a flashcard section with term-to-definition pairs for key concepts introduced in that lecture
   3. Practice questions are visibly grounded in the lecture transcript content — not generic PMP knowledge or PMBOK recall questions
   4. processing-state.json shows 100% completion after a full course run, confirming all lectures processed without silent failures
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Extend system prompt with Practice Questions and Flashcards instructions, add unit tests, bump max_tokens
+- [ ] 03-02-PLAN.md — Pilot run on sample transcripts with human quality review, then full batch regeneration
 
 ### Phase 4: Compilation and Claude Projects Package
 **Goal**: Users can run a compiler command and receive an upload-ready Claude Projects package — section-scoped markdown files, a compiled handbook, and a system prompt — that enables effective PMP study in Claude Projects
@@ -80,5 +84,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Extraction | 2/2 | Complete   | 2026-03-20 |
 | 2. Processing Pipeline | 2/2 | Complete   | 2026-03-20 |
-| 3. AI Content Generation | 0/? | Not started | - |
+| 3. AI Content Generation | 0/2 | Not started | - |
 | 4. Compilation and Claude Projects Package | 0/? | Not started | - |
