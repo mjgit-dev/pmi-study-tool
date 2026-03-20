@@ -114,4 +114,38 @@ describe('buildMessages', () => {
     assert.ok(system.includes('Exam Tip'), 'System prompt should still have Exam Tip instruction');
   });
 
+  // Phase 3 — Practice Questions prompt instructions
+  it('system prompt includes ## Practice Questions section instruction', () => {
+    const { system } = buildMessages(sampleTranscript);
+    assert.ok(system.includes('## Practice Questions'), 'System prompt should contain ## Practice Questions instruction');
+  });
+
+  it('system prompt requires questions grounded in THIS lecture transcript', () => {
+    const { system } = buildMessages(sampleTranscript);
+    assert.ok(system.includes('Do NOT write generic PMBOK recall questions'), 'System prompt should forbid generic PMBOK recall');
+  });
+
+  it('system prompt requires explaining why wrong answers are wrong', () => {
+    const { system } = buildMessages(sampleTranscript);
+    assert.ok(system.includes('Why each wrong option is wrong'), 'System prompt should instruct eliminator-style explanations');
+  });
+
+  // Phase 3 — Flashcards prompt instructions
+  it('system prompt includes ## Flashcards section instruction', () => {
+    const { system } = buildMessages(sampleTranscript);
+    assert.ok(system.includes('## Flashcards'), 'System prompt should contain ## Flashcards instruction');
+  });
+
+  it('system prompt specifies flashcard format as **Term** — definition', () => {
+    const { system } = buildMessages(sampleTranscript);
+    assert.ok(system.includes('**Term**'), 'System prompt should contain **Term** format instruction');
+  });
+
+  it('system prompt places Practice Questions before Flashcards in instructions', () => {
+    const { system } = buildMessages(sampleTranscript);
+    const pqIndex = system.indexOf('## Practice Questions');
+    const fcIndex = system.indexOf('## Flashcards');
+    assert.ok(pqIndex < fcIndex, 'Practice Questions instruction should appear before Flashcards instruction');
+  });
+
 });
