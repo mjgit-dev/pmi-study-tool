@@ -14,7 +14,8 @@ Requirements for v1.1 Study Intelligence. Continues from v1.0 (phases 1-4 comple
 ### ECO Domain Tagging
 
 - [ ] **ENHA-01**: Processor classifies each lecture as People, Process, or Business Environment and stores the tag in the manifest and per-lecture YAML frontmatter
-- [ ] **ENHA-04**: After processing, CLI shows a per-domain lecture count (e.g. People: 12 / Process: 20 / Business Environment: 8)
+- [ ] **ENHA-06**: User can run a re-classification pass that adds ECO tags to already-processed lectures without regenerating notes, questions, or flashcards
+- [ ] **ENHA-04**: After processing (or re-classification), CLI shows a per-domain lecture count (e.g. People: 12 / Process: 20 / Business Environment: 8)
 - [ ] **ENHA-05**: Compiled `CLAUDE_INSTRUCTIONS.md` includes ECO domain weight percentages and per-domain lecture breakdown to guide study emphasis
 
 ### Glossary
@@ -65,18 +66,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ENHA-03 | Phase ? | Pending |
-| ENHA-01 | Phase ? | Pending |
-| ENHA-04 | Phase ? | Pending |
-| ENHA-05 | Phase ? | Pending |
-| ENHA-02 | Phase ? | Pending |
-| STDY-01 | Phase ? | Pending |
+| ENHA-03 | Phase 5 | Pending |
+| ENHA-01 | Phase 6 | Pending |
+| ENHA-06 | Phase 6 | Pending |
+| ENHA-04 | Phase 6 | Pending |
+| ENHA-05 | Phase 6 | Pending |
+| ENHA-02 | Phase 7 | Pending |
+| STDY-01 | Phase 8 | Pending |
 
 **Coverage:**
-- v1.1 requirements: 6 total
-- Mapped to phases: 0
-- Unmapped: 6 ⚠️
+- v1.1 requirements: 7 total
+- Mapped to phases: 7
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after initial v1.1 definition*
+*Last updated: 2026-03-21 — roadmap revised; ENHA-06 confirmed in Phase 6 (re-classification pass, no content regeneration); ENHA-02 confirmed compiler-only (reads existing ## Flashcards sections, zero API cost)*
