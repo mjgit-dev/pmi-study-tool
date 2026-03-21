@@ -80,7 +80,9 @@ Plans:
   1. When weak-areas.json exists in the project root, CLAUDE_INSTRUCTIONS.md includes a Focus Areas section listing the configured topics
   2. When weak-areas.json is absent, CLAUDE_INSTRUCTIONS.md is generated without a Focus Areas section and no error is thrown
   3. Editing weak-areas.json and re-running the compiler updates the Focus Areas section in the output
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 08-01-PLAN.md — Extend buildSystemPrompt + compiler.js to read weak-areas.json and inject Focus Areas section (STDY-01)
 
 ## Progress
 
@@ -95,4 +97,4 @@ Plans:
 | 5. Cost Estimation | 2/2 | Complete   | 2026-03-21 | - |
 | 6. ECO Domain Tagging | 3/3 | Complete   | 2026-03-21 | - |
 | 7. Glossary Extraction | v1.1 | 0/1 | Not started | - |
-| 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |
+| 8. Weak-Area Hints | v1.1 | 0/1 | Not started | - |
