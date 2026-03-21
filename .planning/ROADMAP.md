@@ -91,6 +91,6 @@ Plans:
 | 3. AI Content Generation | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 4. Compilation and Claude Projects Package | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 5. Cost Estimation | 2/2 | Complete   | 2026-03-21 | - |
-| 6. ECO Domain Tagging | v1.1 | 0/3 | Not started | - |
+| 6. ECO Domain Tagging | 1/3 | In Progress|  | - |
 | 7. Glossary Extraction | v1.1 | 0/? | Not started | - |
 | 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |

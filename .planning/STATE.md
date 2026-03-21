@@ -4,11 +4,11 @@ milestone: v1.1
 milestone_name: Study Intelligence
 status: unknown
 stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-21T18:12:37.468Z"
+last_updated: "2026-03-21T22:14:16.000Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
+  total_plans: 5
   completed_plans: 2
 ---
 
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
 
 **Core value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
-**Current focus:** Phase 05 — cost-estimation
+**Current focus:** Phase 06 — eco-domain-tagging
 
 ## Current Position
 
-Phase: 05 (cost-estimation) — EXECUTING
-Plan: 2 of 2
+Phase: 06 (eco-domain-tagging) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -45,6 +45,7 @@ Plan: 2 of 2
 *v1.1 metrics will accumulate during execution*
 | Phase 05 P01 | 107 | 1 tasks | 2 files |
 | Phase 05 P02 | 2 | 2 tasks | 2 files |
+| Phase 06 P01 | 237 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -56,6 +57,9 @@ Recent decisions affecting v1.1:
 
 - Use `countTokens({ model, system, messages })` — not just messages — to avoid 30-50% cost underestimate
 - ECO domain weights stored as a config constant (not hardcoded strings) — July 9, 2026 changeover to 33/41/26 must be documented alongside current 42/50/8
+- [Phase 06-01]: ECO classification uses a separate API call (max_tokens:10) — never merged into main content prompt to keep re-classification pass clean
+- [Phase 06-01]: schemaVersion:2 written to manifest on first ECO-tagged save (Phase 6 designated as schema version bump)
+- [Phase 06-01]: makeMockClient in processor.test.js dispatches ECO calls by max_tokens<=10 guard, tracked separately via _ecoCallCount
 - Manifest schema: add null-guards for all new fields + schemaVersion: 2 in Phase 6 (first phase to write new manifest fields)
 - Glossary deduplication: normalize term keys to lowercase before dedup; first-occurrence definition wins
 - Phase 6: ENHA-06 re-classification pass calls AI only for ECO tagging — must not regenerate notes, questions, or flashcards
@@ -84,6 +88,6 @@ v1.1 watch items:
 
 ## Session Continuity
 
-Last session: 2026-03-21T18:10:06.081Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-03-21T22:14:16.000Z
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None
