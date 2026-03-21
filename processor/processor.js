@@ -12,6 +12,7 @@ const { loadManifest, saveManifest, shouldSkip } = require('./manifest');
 const { buildMessages } = require('./prompt');
 const { buildMarkdown } = require('./markdown');
 const { estimateCost, countLectureTokens, formatEstimateTable, MAX_OUTPUT_TOKENS } = require('./estimate');
+const { buildEcoMessages, parseEcoTag, printEcoDomainSummary } = require('./eco-prompt');
 
 const DEFAULT_OUTPUT_DIR = path.join(__dirname, 'output');
 
@@ -144,9 +145,29 @@ async function processAll(inputDir, flags, client, manifestPath, outputDir) {
         messages: messages
       });
       const apiText = response.content[0].text;
-      const md = buildMarkdown(transcript, apiText);
+
+      // ECO domain classification — separate API call (not merged into content prompt)
+      const ecoPrompt = buildEcoMessages(transcript);
+      const ecoResponse = await client.messages.create({
+        model: process.env.PMI_MODEL || 'claude-sonnet-4-6',
+        max_tokens: 10,
+        system: ecoPrompt.system,
+        messages: ecoPrompt.messages
+      });
+      const ecoTag = parseEcoTag(ecoResponse.content[0].text);
+
+      const md = buildMarkdown(transcript, apiText, ecoTag);
       fs.writeFileSync(path.join(resolvedOutput, file.replace('.json', '.md')), md, 'utf8');
-      manifest[file] = { filename: file, status: 'complete', processedAt: new Date().toISOString() };
+      manifest[file] = {
+        filename: file,
+        status: 'complete',
+        processedAt: new Date().toISOString(),
+        ecoTag: ecoTag || null,
+        ecoTaggedAt: ecoTag ? new Date().toISOString() : null
+      };
+      if (!manifest.schemaVersion) {
+        manifest.schemaVersion = 2;
+      }
       saveManifest(resolvedManifest, manifest);
       processed++;
       process.stdout.write(' done (' + ((Date.now() - t) / 1000).toFixed(1) + 's)\n');
@@ -164,6 +185,7 @@ async function processAll(inputDir, flags, client, manifestPath, outputDir) {
   const secs = Math.floor((elapsed % 60000) / 1000);
   const timeStr = mins > 0 ? mins + 'm ' + secs + 's' : secs + 's';
   console.log('\nProcessed: ' + processed + ' | Failed: ' + failed + ' | Skipped: ' + skipped + ' | Time: ' + timeStr);
+  printEcoDomainSummary(manifest);
 
   return { processed, failed, skipped };
 }

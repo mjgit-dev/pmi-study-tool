@@ -112,4 +112,24 @@ describe('buildMarkdown', () => {
     assert.ok(result.includes('sectionName:'), 'Should include sectionName field');
   });
 
+  it('buildMarkdown with ecoTag includes ecoTag in frontmatter', () => {
+    const result = buildMarkdown({ lectureTitle: 'Test', sectionName: 'Section' }, 'body', 'Process');
+    assert.ok(result.includes('ecoTag: "Process"'), 'Should include ecoTag: "Process" in frontmatter');
+  });
+
+  it('buildMarkdown without ecoTag omits ecoTag from frontmatter', () => {
+    const result = buildMarkdown({ lectureTitle: 'Test', sectionName: 'Section' }, 'body');
+    assert.ok(!result.includes('ecoTag'), 'Should not include ecoTag when not provided');
+  });
+
+  it('buildMarkdown with ecoTag People includes ecoTag: "People" in frontmatter', () => {
+    const result = buildMarkdown({ lectureTitle: 'Test', sectionName: 'Section' }, 'body', 'People');
+    assert.ok(result.includes('ecoTag: "People"'), 'Should include ecoTag: "People" in frontmatter');
+  });
+
+  it('buildMarkdown with null ecoTag omits ecoTag from frontmatter', () => {
+    const result = buildMarkdown({ lectureTitle: 'Test', sectionName: 'Section' }, 'body', null);
+    assert.ok(!result.includes('ecoTag'), 'Should not include ecoTag when null is passed');
+  });
+
 });

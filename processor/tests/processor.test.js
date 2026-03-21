@@ -38,16 +38,23 @@ const MOCK_API_RESPONSE_TEXT = '## Key Concepts\n- **Project**: A temporary ende
 
 function makeMockClient(opts = {}) {
   const callCount = { value: 0 };
+  const ecoCallCount = { value: 0 };
   const countTokensCount = { value: 0 };
   const shouldThrow = opts.shouldThrow || false;
   const throwMessage = opts.throwMessage || 'API error';
   const countTokensResult = opts.countTokensResult || { input_tokens: 1500 };
+  const ecoTagResponse = opts.ecoTagResponse || 'Process';
 
   const client = {
     _callCount: callCount,
+    _ecoCallCount: ecoCallCount,
     _countTokensCount: countTokensCount,
     messages: {
-      create: async () => {
+      create: async (params) => {
+        if (params && params.max_tokens <= 10) {
+          ecoCallCount.value++;
+          return { content: [{ text: ecoTagResponse }] };
+        }
         callCount.value++;
         if (shouldThrow) {
           throw new Error(throwMessage);
@@ -96,23 +103,29 @@ test('processAll processes 2 files, writes .md for each, marks complete in manif
   const client = makeMockClient();
   const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
 
-  // API called exactly twice
+  // API called exactly twice (content calls)
   assert.equal(client._callCount.value, 2, 'API should be called exactly 2 times');
+  // ECO API called twice (one per lecture)
+  assert.equal(client._ecoCallCount.value, 2, 'ECO API should be called exactly 2 times');
 
   // Both .md files written
   const outputFiles = fs.readdirSync(outputDir);
   assert.ok(outputFiles.includes('lecture-01.md'), 'lecture-01.md should exist in output');
   assert.ok(outputFiles.includes('lecture-02.md'), 'lecture-02.md should exist in output');
 
-  // .md content starts with frontmatter
+  // .md content starts with frontmatter and includes ecoTag
   const md1 = fs.readFileSync(path.join(outputDir, 'lecture-01.md'), 'utf8');
   assert.ok(md1.startsWith('---'), 'Output should start with YAML frontmatter');
   assert.ok(md1.includes('## Key Concepts'), 'Output should include Key Concepts section');
+  assert.ok(md1.includes('ecoTag: "Process"'), 'Output should include ecoTag frontmatter field');
 
-  // Manifest shows both complete
+  // Manifest shows both complete with ecoTag and schemaVersion
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   assert.equal(manifest['lecture-01.json'].status, 'complete', 'lecture-01.json should be complete');
   assert.equal(manifest['lecture-02.json'].status, 'complete', 'lecture-02.json should be complete');
+  assert.equal(manifest['lecture-01.json'].ecoTag, 'Process', 'lecture-01.json should have ecoTag Process');
+  assert.equal(manifest['lecture-02.json'].ecoTag, 'Process', 'lecture-02.json should have ecoTag Process');
+  assert.equal(manifest.schemaVersion, 2, 'Manifest should have schemaVersion: 2');
 
   // Return value correct
   assert.equal(result.processed, 2);
@@ -225,16 +238,21 @@ test('processAll handles API error — marks failed in manifest, continues batch
   writeSampleJson(inputDir, 'lecture-01.json', SAMPLE_TRANSCRIPT_1);
   writeSampleJson(inputDir, 'lecture-02.json', SAMPLE_TRANSCRIPT_2);
 
-  // First call throws, second succeeds
-  let callNum = 0;
+  // First content call throws, second succeeds; ECO calls succeed
+  let contentCallNum = 0;
   const client = {
     _callCount: { value: 0 },
+    _ecoCallCount: { value: 0 },
     _countTokensCount: { value: 0 },
     messages: {
-      create: async () => {
+      create: async (params) => {
+        if (params && params.max_tokens <= 10) {
+          client._ecoCallCount.value++;
+          return { content: [{ text: 'Process' }] };
+        }
         client._callCount.value++;
-        callNum++;
-        if (callNum === 1) {
+        contentCallNum++;
+        if (contentCallNum === 1) {
           throw new Error('rate_limit_error: Too many requests');
         }
         return { content: [{ text: MOCK_API_RESPONSE_TEXT }] };
@@ -252,8 +270,8 @@ test('processAll handles API error — marks failed in manifest, continues batch
 
   const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
 
-  // Both files attempted (batch continued after failure)
-  assert.equal(client._callCount.value, 2, 'API should be called for both files');
+  // Both content API calls attempted (batch continued after failure)
+  assert.equal(client._callCount.value, 2, 'Content API should be called for both files');
 
   // Manifest reflects correct statuses
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -331,4 +349,55 @@ test('processAll --dry-run skips estimate gate — no countTokens calls', async 
 
   assert.equal(client._countTokensCount.value, 0, 'countTokens should not be called during dry-run');
   assert.equal(client._callCount.value, 0, 'messages.create should not be called during dry-run');
+});
+
+// ============================================================
+// Test 9: processAll writes ecoTag to frontmatter and manifest
+//         (ENHA-01: ecoTag in frontmatter and manifest entry)
+// ============================================================
+test('processAll writes ecoTag to frontmatter and manifest', async () => {
+  const inputDir = makeTempDir();
+  const outputDir = makeTempDir();
+  const manifestPath = path.join(makeTempDir(), 'state.json');
+  writeSampleJson(inputDir, 'lecture-01.json', SAMPLE_TRANSCRIPT_1);
+
+  const client = makeMockClient({ ecoTagResponse: 'People' });
+  await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
+
+  // .md file contains ecoTag in frontmatter
+  const md = fs.readFileSync(path.join(outputDir, 'lecture-01.md'), 'utf8');
+  assert.ok(md.includes('ecoTag: "People"'), 'Output .md should include ecoTag: "People" in frontmatter');
+
+  // Manifest entry has ecoTag and ecoTaggedAt
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  assert.equal(manifest['lecture-01.json'].ecoTag, 'People', 'Manifest entry should have ecoTag: People');
+  assert.equal(typeof manifest['lecture-01.json'].ecoTaggedAt, 'string', 'Manifest entry should have ecoTaggedAt as string');
+});
+
+// ============================================================
+// Test 10: processAll prints domain summary after batch
+//          (ENHA-04: console output format verification)
+// ============================================================
+test('processAll prints domain summary after batch', async () => {
+  const inputDir = makeTempDir();
+  const outputDir = makeTempDir();
+  const manifestPath = path.join(makeTempDir(), 'state.json');
+  writeSampleJson(inputDir, 'lecture-01.json', SAMPLE_TRANSCRIPT_1);
+
+  const client = makeMockClient({ ecoTagResponse: 'People' });
+
+  const logged = [];
+  const origLog = console.log;
+  console.log = (...args) => logged.push(args.join(' '));
+  try {
+    await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
+  } finally {
+    console.log = origLog;
+  }
+
+  const summaryLine = logged.find(l => l.includes('People:') && l.includes('Process:'));
+  assert.ok(summaryLine, 'Expected domain summary line in console output');
+  assert.ok(summaryLine.includes('People: 1'), 'Expected People: 1 in summary');
+  assert.ok(summaryLine.includes('Process: 0'), 'Expected Process: 0 in summary');
+  assert.ok(summaryLine.includes('Business Environment: 0'), 'Expected Business Environment: 0 in summary');
 });
