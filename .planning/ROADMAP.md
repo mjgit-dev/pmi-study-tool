@@ -68,7 +68,9 @@ Plans:
   2. The glossary is deduplicated (same term appearing in multiple lectures appears once) and sorted alphabetically
   3. Generating the glossary requires zero new Anthropic API calls — it is a pure compiler operation over existing files
   4. The compiler logs the total glossary term count on completion
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 07-01-PLAN.md — TDD glossary module + compiler integration (ENHA-02)
 
 ### Phase 8: Weak-Area Hints
 **Goal**: Users can declare topics they struggle with in a config file and have targeted focus guidance automatically injected into the Claude Projects system prompt
@@ -92,5 +94,5 @@ Plans:
 | 4. Compilation and Claude Projects Package | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 5. Cost Estimation | 2/2 | Complete   | 2026-03-21 | - |
 | 6. ECO Domain Tagging | 3/3 | Complete   | 2026-03-21 | - |
-| 7. Glossary Extraction | v1.1 | 0/? | Not started | - |
+| 7. Glossary Extraction | v1.1 | 0/1 | Not started | - |
 | 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |
