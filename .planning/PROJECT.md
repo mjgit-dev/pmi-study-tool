@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A toolkit that extracts lecture transcripts from a 30+ hour Udemy PMP certification course, processes them into structured study material using AI, and packages everything for use inside Claude Projects — where the actual studying, quizzing, and Q&A happens. The output is a comprehensive knowledge base and handbook that replaces the current manual workflow of copy-pasting transcripts into Claude.ai one at a time.
+A toolkit that extracts lecture transcripts from a 30+ hour Udemy PMP certification course, processes them into structured study material (notes, practice questions, flashcards) using the Anthropic API, and compiles everything into a `claude-package/` directory ready for upload to Claude Projects — where the actual studying, quizzing, and Q&A happens.
 
 ## Core Value
 
@@ -12,17 +12,24 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 
 ### Validated
 
-- [x] Browser script extracts transcripts from Udemy course player automatically — Validated in Phase 1: Extraction
-- [x] Raw transcripts are processed into structured notes (key concepts, summaries, examples) — Validated in Phase 2: Processing Pipeline
-- [x] PMP exam-style practice questions are generated per topic (scenario-based, with reasoning) — Validated in Phase 3: AI Content Generation
-- [x] Flashcard-style content is generated for key terms and concepts — Validated in Phase 3: AI Content Generation
-- [x] Processing pipeline handles 100+ transcripts without manual intervention — Validated in Phase 2 & 3
+- ✓ Browser bookmarklet extracts transcript and metadata (section name, lecture title) from Udemy DevTools — v1.0
+- ✓ Extracted transcripts are automatically cleaned (timestamps stripped, segments joined into readable sentences) — v1.0
+- ✓ Extraction validates word count and flags captures under 300 words as likely failures — v1.0
+- ✓ Pipeline processes raw transcript JSON through Anthropic API to produce structured notes per lecture — v1.0
+- ✓ Pipeline generates PMP scenario-based practice questions (4-option, situational) with explained answers per lecture — v1.0
+- ✓ Pipeline generates flashcard content (term → definition pairs) per lecture — v1.0
+- ✓ Processing manifest tracks status (pending/complete/failed) per lecture and enables resume on failure — v1.0
+- ✓ All content types generated in a single API call per lecture to minimize cost — v1.0
+- ✓ Processed content assembled into one markdown file per course section optimized for Claude Projects — v1.0
+- ✓ Compiled handbook generated as single reference document with linked table of contents — v1.0
+- ✓ Claude Projects system prompt file generated, instructing Claude how to quiz and assist — v1.0
 
-### Validated
+### Active
 
-- [x] Output is organized as clean markdown optimized for Claude Projects upload — Validated in Phase 4: Compilation
-- [x] A compiled handbook (single reference document) is generated from all processed content — Validated in Phase 4: Compilation
-- [x] Content is organized by course section/module to mirror the Udemy structure — Validated in Phase 4: Compilation
+- [ ] PMI Exam Content Outline (ECO) domain tagging per lecture (People 42%, Process 50%, Business Environment 8%)
+- [ ] Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference
+- [ ] Processing cost estimate displayed before any batch run begins
+- [ ] Weak-area hint injection — system prompt includes guidance for Claude to focus on topics the user has struggled with
 
 ### Out of Scope
 
@@ -31,20 +38,26 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 - Mobile app — desktop workflow
 - Real-time transcript capture — batch processing is sufficient
 - Video downloading — transcripts only, not video content
+- Automatic Claude Projects upload — no public API exists for programmatic upload
+- Per-lecture output files — section-scoped files (8–12) perform better in Claude Projects than 100+ files
 
 ## Context
 
-- User is studying for PMP (Project Management Professional) certification
-- Course is 30+ hours on Udemy — likely 100+ individual lectures
-- Current workflow: copy transcript manually → paste into Claude.ai → copy summary → paste into Google Docs
-- User has Claude Pro (claude.ai subscription) — Claude Projects is the target study environment
-- Claude Projects supports document upload + persistent AI conversation over those docs
-- Processing pipeline will use Anthropic API (separate from Pro plan) for bulk transcript processing
-- Output structure should align with how Claude Projects best ingests information
+Shipped v1.0 with ~1,523 lines JavaScript.
+
+Tech stack: Node.js (CommonJS), Anthropic SDK, `node:test` built-in test runner, browser bookmarklet.
+
+Architecture: extractor/ (browser) → processor/ (Anthropic API batch) → compiler/ → `claude-package/` upload directory.
+
+The pipeline has been verified end-to-end with 2 transcripts. Full course processing (100+ lectures) untested at scale — performance and cost per full run are unknown.
+
+Known tech debt from v1.0:
+- Processor has no low-word-count guard (EXTR-03 only enforced at extraction time)
+- H1 heading collision in compiled output (AI-generated H1 conflicts with section file hierarchy — visual only, content correct)
 
 ## Constraints
 
-- **Platform**: Transcript extraction via browser script (no Udemy API access)
+- **Platform**: Transcript extraction via browser bookmarklet (no Udemy API access)
 - **AI Interface**: Claude Projects (claude.ai) — not a custom-built chat UI
 - **Scale**: Must handle 30+ hours / 100+ transcripts without breaking
 - **Format**: Markdown output — Claude Projects works best with clean, structured markdown
@@ -53,10 +66,14 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Use Claude Projects as study interface | User has Pro plan, no need to build redundant chat UI | — Pending |
-| Browser script for extraction | No official Udemy transcript API; player shows transcripts in DOM | — Pending |
-| Anthropic API for bulk processing | 100+ transcripts can't be manually pasted for processing | — Pending |
-| Markdown as primary output format | Claude Projects ingests markdown well; portable to other tools | — Pending |
+| Use Claude Projects as study interface | User has Pro plan, no need to build redundant chat UI | ✓ Good |
+| Browser bookmarklet for extraction | No official Udemy transcript API; player shows transcripts in DOM | ✓ Good |
+| Anthropic API for bulk processing | 100+ transcripts can't be manually pasted for processing | ✓ Good |
+| Markdown as primary output format | Claude Projects ingests markdown well; portable to other tools | ✓ Good |
+| Section-scoped output files (not per-lecture) | 8–12 section files perform better in Claude Projects than 100+ individual files | ✓ Good |
+| Single API call per lecture for all content types | Minimizes cost; notes + questions + flashcards in one `messages.create` | ✓ Good |
+| node:test built-in (no Jest) | Zero install; sufficient for unit testing pure functions | ✓ Good |
+| CommonJS modules throughout | Consistent with Anthropic SDK and Node.js toolchain; no ESM friction | ✓ Good |
 
 ---
-*Last updated: 2026-03-21 — Phase 4 complete: Compiler and Claude Projects package ready for upload*
+*Last updated: 2026-03-21 after v1.0 milestone*
