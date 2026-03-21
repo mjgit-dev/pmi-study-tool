@@ -14,7 +14,7 @@ Requirements for v1.1 Study Intelligence. Continues from v1.0 (phases 1-4 comple
 ### ECO Domain Tagging
 
 - [x] **ENHA-01**: Processor classifies each lecture as People, Process, or Business Environment and stores the tag in the manifest and per-lecture YAML frontmatter
-- [ ] **ENHA-06**: User can run a re-classification pass that adds ECO tags to already-processed lectures without regenerating notes, questions, or flashcards
+- [x] **ENHA-06**: User can run a re-classification pass that adds ECO tags to already-processed lectures without regenerating notes, questions, or flashcards
 - [x] **ENHA-04**: After processing (or re-classification), CLI shows a per-domain lecture count (e.g. People: 12 / Process: 20 / Business Environment: 8)
 - [ ] **ENHA-05**: Compiled `CLAUDE_INSTRUCTIONS.md` includes ECO domain weight percentages and per-domain lecture breakdown to guide study emphasis
 
@@ -68,7 +68,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | ENHA-03 | Phase 5 | Complete |
 | ENHA-01 | Phase 6 | Complete |
-| ENHA-06 | Phase 6 | Pending |
+| ENHA-06 | Phase 6 | Complete |
 | ENHA-04 | Phase 6 | Complete |
 | ENHA-05 | Phase 6 | Pending |
 | ENHA-02 | Phase 7 | Pending |

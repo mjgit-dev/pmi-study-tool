@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
 status: unknown
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-21T22:14:16.000Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-21T22:21:05.697Z"
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 2
+  completed_plans: 5
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
 ## Current Position
 
 Phase: 06 (eco-domain-tagging) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -46,6 +46,8 @@ Plan: 2 of 3
 | Phase 05 P01 | 107 | 1 tasks | 2 files |
 | Phase 05 P02 | 2 | 2 tasks | 2 files |
 | Phase 06 P01 | 237 | 2 tasks | 6 files |
+| Phase 06 P02 | 3 | 2 tasks | 2 files |
+| Phase 06 P03 | 2 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -63,6 +65,8 @@ Recent decisions affecting v1.1:
 - Manifest schema: add null-guards for all new fields + schemaVersion: 2 in Phase 6 (first phase to write new manifest fields)
 - Glossary deduplication: normalize term keys to lowercase before dedup; first-occurrence definition wins
 - Phase 6: ENHA-06 re-classification pass calls AI only for ECO tagging — must not regenerate notes, questions, or flashcards
+- [Phase 06-02]: patchFrontmatterEcoTag uses two-regex strategy (strict then fallback) and slices body bytes verbatim — guarantees zero body mutation
+- [Phase 06-02]: retagAll uses max_tokens:10 ECO-only call, never imports buildMessages — cleanly separates re-classification from content generation
 - Phase 7: Glossary is a compiler-only feature reading existing ## Flashcards sections — zero new API calls
 - [Phase 05]: estimateCost always uses MAX_OUTPUT_TOKENS (8192) for output cost — upper bound by design, documented in CLI table footnote
 - [Phase 05]: countLectureTokens passes full { model, system, messages } to client.beta.messages.countTokens to avoid 30-50% cost underestimate
@@ -88,6 +92,6 @@ v1.1 watch items:
 
 ## Session Continuity
 
-Last session: 2026-03-21T22:14:16.000Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-03-21T22:20:00.000Z
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None

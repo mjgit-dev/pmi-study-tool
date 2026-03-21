@@ -24,7 +24,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Add ECO domain awareness, cost visibility, glossary extraction, and adaptive study hints so the pipeline produces richer, more trustworthy study material.
 
 - [x] **Phase 5: Cost Estimation** — User can see estimated API cost for pending lectures and confirm before any batch run starts (completed 2026-03-21)
-- [ ] **Phase 6: ECO Domain Tagging** — Every processed lecture is classified into a PMI ECO domain; a re-classification pass allows tagging already-processed lectures without regenerating notes, questions, or flashcards; domain data flows through the manifest, compiled output, and study instructions
+- [x] **Phase 6: ECO Domain Tagging** — Every processed lecture is classified into a PMI ECO domain; a re-classification pass allows tagging already-processed lectures without regenerating notes, questions, or flashcards; domain data flows through the manifest, compiled output, and study instructions (completed 2026-03-21)
 - [ ] **Phase 7: Glossary Extraction** — All PMI terms from existing flashcard sections are aggregated into a single deduplicated, alphabetically sorted GLOSSARY.md at compile time — no new API calls required
 - [ ] **Phase 8: Weak-Area Hints** — User can declare weak topics in a config file and have them injected as focus guidance into CLAUDE_INSTRUCTIONS.md
 
@@ -91,6 +91,6 @@ Plans:
 | 3. AI Content Generation | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 4. Compilation and Claude Projects Package | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 5. Cost Estimation | 2/2 | Complete   | 2026-03-21 | - |
-| 6. ECO Domain Tagging | 1/3 | In Progress|  | - |
+| 6. ECO Domain Tagging | 3/3 | Complete   | 2026-03-21 | - |
 | 7. Glossary Extraction | v1.1 | 0/? | Not started | - |
 | 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |
