@@ -20,7 +20,7 @@ Requirements for v1.1 Study Intelligence. Continues from v1.0 (phases 1-4 comple
 
 ### Glossary
 
-- [ ] **ENHA-02**: Compiler aggregates all PMI terms from processed flashcard sections into a deduplicated, alphabetically sorted `GLOSSARY.md` in `claude-package/`
+- [x] **ENHA-02**: Compiler aggregates all PMI terms from processed flashcard sections into a deduplicated, alphabetically sorted `GLOSSARY.md` in `claude-package/`
 
 ### Study Intelligence
 
@@ -71,7 +71,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENHA-06 | Phase 6 | Complete |
 | ENHA-04 | Phase 6 | Complete |
 | ENHA-05 | Phase 6 | Complete |
-| ENHA-02 | Phase 7 | Pending |
+| ENHA-02 | Phase 7 | Complete |
 | STDY-01 | Phase 8 | Pending |
 
 **Coverage:**
