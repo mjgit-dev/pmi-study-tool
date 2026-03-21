@@ -1,14 +1,25 @@
 'use strict';
 
+// ECO domain weights -- current PMI exam percentages
+// IMPORTANT: PMI exam weights change July 9, 2026 from 42/50/8 to 33/41/26
+const ECO_WEIGHTS = {
+  People: 42,
+  Process: 50,
+  'Business Environment': 8,
+};
+
 /**
- * buildSystemPrompt()
- * Returns the static markdown string for CLAUDE_INSTRUCTIONS.md — the system prompt
+ * buildSystemPrompt(ecoStats)
+ * Returns the markdown string for CLAUDE_INSTRUCTIONS.md — the system prompt
  * for a Claude Projects instance loaded with the compiled PMP study package.
  *
+ * @param {Object|null|undefined} ecoStats - Optional domain lecture counts.
+ *   Shape: { People: number, Process: number, 'Business Environment': number }
+ *   When falsy, the ECO domain section is omitted (backward compatible).
  * @returns {string} Markdown content for CLAUDE_INSTRUCTIONS.md
  */
-function buildSystemPrompt() {
-  return `# PMP Study Assistant
+function buildSystemPrompt(ecoStats) {
+  let prompt = `# PMP Study Assistant
 
 You are a PMP exam study assistant. Your ONLY knowledge base is the uploaded course files. You must ground every answer in the specific lecture content provided.
 
@@ -35,6 +46,29 @@ When the user names a topic, domain, or process group, concentrate questions and
 - Do not and refuse to supplement answers with general PMP knowledge, PMBOK references, or information not present in the uploaded files
 - When quizzing, use ONLY the practice questions from the uploaded quiz files — do not generate new questions
 `;
+
+  // Append ECO domain section if stats are available
+  if (ecoStats) {
+    prompt += `
+## ECO Domain Coverage
+
+PMI exam domain weights (current):
+- People: ${ECO_WEIGHTS.People}%
+- Process: ${ECO_WEIGHTS.Process}%
+- Business Environment: ${ECO_WEIGHTS['Business Environment']}%
+
+Lectures in this package by domain:
+| Domain | Lectures | Weight |
+|--------|----------|--------|
+| People | ${ecoStats.People || 0} | ${ECO_WEIGHTS.People}% |
+| Process | ${ecoStats.Process || 0} | ${ECO_WEIGHTS.Process}% |
+| Business Environment | ${ecoStats['Business Environment'] || 0} | ${ECO_WEIGHTS['Business Environment']}% |
+
+When quizzing, weight your question selection proportionally to these domain percentages.
+`;
+  }
+
+  return prompt;
 }
 
 module.exports = { buildSystemPrompt };

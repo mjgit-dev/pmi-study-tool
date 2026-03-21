@@ -54,3 +54,40 @@ describe('buildSystemPrompt', () => {
     assert.ok(!result.includes('TBD'), 'Output contains TBD placeholder');
   });
 });
+
+describe('buildSystemPrompt with ecoStats', () => {
+  it('buildSystemPrompt(null) returns prompt without ECO section', () => {
+    const result = buildSystemPrompt(null);
+    assert.ok(!result.includes('## ECO Domain Coverage'), 'ECO section should be absent when null passed');
+  });
+
+  it('buildSystemPrompt with ecoStats includes ECO Domain Coverage heading', () => {
+    const result = buildSystemPrompt({ People: 12, Process: 20, 'Business Environment': 8 });
+    assert.ok(result.includes('## ECO Domain Coverage'), 'Missing ECO Domain Coverage heading');
+  });
+
+  it('buildSystemPrompt with ecoStats includes weight percentages', () => {
+    const result = buildSystemPrompt({ People: 12, Process: 20, 'Business Environment': 8 });
+    assert.ok(result.includes('People: 42%'), 'Missing People: 42% weight');
+    assert.ok(result.includes('Process: 50%'), 'Missing Process: 50% weight');
+    assert.ok(result.includes('Business Environment: 8%'), 'Missing Business Environment: 8% weight');
+  });
+
+  it('buildSystemPrompt with ecoStats includes lecture count table', () => {
+    const result = buildSystemPrompt({ People: 12, Process: 20, 'Business Environment': 8 });
+    assert.ok(result.includes('| People | 12 | 42% |'), 'Missing People row in table');
+    assert.ok(result.includes('| Process | 20 | 50% |'), 'Missing Process row in table');
+    assert.ok(result.includes('| Business Environment | 8 | 8% |'), 'Missing Business Environment row in table');
+  });
+
+  it('buildSystemPrompt with ecoStats includes quiz weighting instruction', () => {
+    const result = buildSystemPrompt({ People: 12, Process: 20, 'Business Environment': 8 });
+    assert.ok(result.includes('weight your question selection proportionally'), 'Missing quiz weighting instruction');
+  });
+
+  it('buildSystemPrompt with zero counts still includes ECO section', () => {
+    const result = buildSystemPrompt({ People: 0, Process: 0, 'Business Environment': 0 });
+    assert.ok(result.includes('## ECO Domain Coverage'), 'ECO section should be present even with zero counts');
+    assert.ok(result.includes('| People | 0 | 42% |'), 'Missing People row with zero count');
+  });
+});
