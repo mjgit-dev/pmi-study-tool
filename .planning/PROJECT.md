@@ -28,7 +28,7 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 
 <!-- Milestone v1.1 scope -->
 - [x] PMI Exam Content Outline (ECO) domain tagging per lecture (People 42%, Process 50%, Business Environment 8%) — Validated in Phase 06: eco-domain-tagging
-- [ ] Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference
+- [x] Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference — Validated in Phase 07: glossary-extraction
 - [x] Processing cost estimate displayed before any batch run begins — Validated in Phase 05: cost-estimation
 - [ ] Weak-area hint injection — system prompt includes guidance for Claude to focus on topics the user has struggled with
 
@@ -87,4 +87,4 @@ Known tech debt from v1.0:
 | CommonJS modules throughout | Consistent with Anthropic SDK and Node.js toolchain; no ESM friction | ✓ Good |
 
 ---
-*Last updated: 2026-03-21 after Phase 06 (eco-domain-tagging) complete*
+*Last updated: 2026-03-22 after Phase 07 (glossary-extraction) complete*
