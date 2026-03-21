@@ -38,11 +38,14 @@ const MOCK_API_RESPONSE_TEXT = '## Key Concepts\n- **Project**: A temporary ende
 
 function makeMockClient(opts = {}) {
   const callCount = { value: 0 };
+  const countTokensCount = { value: 0 };
   const shouldThrow = opts.shouldThrow || false;
   const throwMessage = opts.throwMessage || 'API error';
+  const countTokensResult = opts.countTokensResult || { input_tokens: 1500 };
 
   const client = {
     _callCount: callCount,
+    _countTokensCount: countTokensCount,
     messages: {
       create: async () => {
         callCount.value++;
@@ -50,6 +53,14 @@ function makeMockClient(opts = {}) {
           throw new Error(throwMessage);
         }
         return { content: [{ text: MOCK_API_RESPONSE_TEXT }] };
+      }
+    },
+    beta: {
+      messages: {
+        countTokens: async () => {
+          countTokensCount.value++;
+          return countTokensResult;
+        }
       }
     }
   };
@@ -83,7 +94,7 @@ test('processAll processes 2 files, writes .md for each, marks complete in manif
   writeSampleJson(inputDir, 'lecture-02.json', SAMPLE_TRANSCRIPT_2);
 
   const client = makeMockClient();
-  const result = await processAll(inputDir, { dryRun: false, force: false }, client, manifestPath, outputDir);
+  const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
 
   // API called exactly twice
   assert.equal(client._callCount.value, 2, 'API should be called exactly 2 times');
@@ -132,7 +143,7 @@ test('processAll skips already-complete lecture — 0 API calls, skipped=1', asy
   fs.writeFileSync(manifestPath, JSON.stringify(initialManifest, null, 2), 'utf8');
 
   const client = makeMockClient();
-  const result = await processAll(inputDir, { dryRun: false, force: false }, client, manifestPath, outputDir);
+  const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
 
   assert.equal(client._callCount.value, 0, 'API should not be called for already-complete lecture');
   assert.equal(result.skipped, 1, 'Skipped count should be 1');
@@ -163,7 +174,7 @@ test('processAll --force reprocesses completed lecture — API called 1 time', a
   fs.writeFileSync(manifestPath, JSON.stringify(initialManifest, null, 2), 'utf8');
 
   const client = makeMockClient();
-  const result = await processAll(inputDir, { dryRun: false, force: true }, client, manifestPath, outputDir);
+  const result = await processAll(inputDir, { dryRun: false, force: true, estimate: false, yes: true }, client, manifestPath, outputDir);
 
   assert.equal(client._callCount.value, 1, 'API should be called once when --force is set');
   assert.equal(result.processed, 1, 'Processed count should be 1');
@@ -184,7 +195,7 @@ test('processAll --dry-run makes no API calls and writes no files', async () => 
   writeSampleJson(inputDir, 'lecture-02.json', SAMPLE_TRANSCRIPT_2);
 
   const client = makeMockClient();
-  const result = await processAll(inputDir, { dryRun: true, force: false }, client, manifestPath, outputDir);
+  const result = await processAll(inputDir, { dryRun: true, force: false, estimate: false, yes: false }, client, manifestPath, outputDir);
 
   assert.equal(client._callCount.value, 0, 'API should not be called during dry-run');
 
@@ -218,6 +229,7 @@ test('processAll handles API error — marks failed in manifest, continues batch
   let callNum = 0;
   const client = {
     _callCount: { value: 0 },
+    _countTokensCount: { value: 0 },
     messages: {
       create: async () => {
         client._callCount.value++;
@@ -227,10 +239,18 @@ test('processAll handles API error — marks failed in manifest, continues batch
         }
         return { content: [{ text: MOCK_API_RESPONSE_TEXT }] };
       }
+    },
+    beta: {
+      messages: {
+        countTokens: async () => {
+          client._countTokensCount.value++;
+          return { input_tokens: 1500 };
+        }
+      }
     }
   };
 
-  const result = await processAll(inputDir, { dryRun: false, force: false }, client, manifestPath, outputDir);
+  const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
 
   // Both files attempted (batch continued after failure)
   assert.equal(client._callCount.value, 2, 'API should be called for both files');
@@ -250,4 +270,65 @@ test('processAll handles API error — marks failed in manifest, continues batch
   const outputFiles = fs.readdirSync(outputDir);
   assert.ok(!outputFiles.includes('lecture-01.md'), 'Failed lecture should not have .md output');
   assert.ok(outputFiles.includes('lecture-02.md'), 'Successful lecture should have .md output');
+});
+
+// ============================================================
+// Test 6: --yes flag — countTokens called for pending lectures,
+//         processing API also called (estimate gate passed via --yes)
+// ============================================================
+test('processAll with --yes counts tokens but makes no extra processing API calls', async () => {
+  const inputDir = makeTempDir();
+  const outputDir = makeTempDir();
+  const manifestPath = path.join(makeTempDir(), 'state.json');
+  writeSampleJson(inputDir, 'lecture-01.json', SAMPLE_TRANSCRIPT_1);
+
+  const client = makeMockClient();
+  const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
+
+  // countTokens called for the 1 pending lecture
+  assert.equal(client._countTokensCount.value, 1, 'countTokens should be called once for the pending lecture');
+  // Processing API also called
+  assert.equal(client._callCount.value, 1, 'messages.create should be called once');
+  assert.equal(result.processed, 1);
+});
+
+// ============================================================
+// Test 7: estimate gate skipped when all lectures complete
+//         (pendingFiles.length === 0)
+// ============================================================
+test('processAll skips estimate gate when all lectures already complete', async () => {
+  const inputDir = makeTempDir();
+  const outputDir = makeTempDir();
+  const manifestDir = makeTempDir();
+  const manifestPath = path.join(manifestDir, 'state.json');
+  writeSampleJson(inputDir, 'lecture-01.json', SAMPLE_TRANSCRIPT_1);
+
+  const initialManifest = {
+    'lecture-01.json': { filename: 'lecture-01.json', status: 'complete', processedAt: '2026-03-20T10:00:00.000Z' }
+  };
+  fs.writeFileSync(manifestPath, JSON.stringify(initialManifest, null, 2), 'utf8');
+
+  const client = makeMockClient();
+  const result = await processAll(inputDir, { dryRun: false, force: false, estimate: false, yes: true }, client, manifestPath, outputDir);
+
+  assert.equal(client._countTokensCount.value, 0, 'countTokens should not be called when no pending lectures');
+  assert.equal(client._callCount.value, 0, 'messages.create should not be called');
+  assert.equal(result.skipped, 1);
+});
+
+// ============================================================
+// Test 8: --dry-run skips estimate gate entirely
+//         (no countTokens calls)
+// ============================================================
+test('processAll --dry-run skips estimate gate — no countTokens calls', async () => {
+  const inputDir = makeTempDir();
+  const outputDir = makeTempDir();
+  const manifestPath = path.join(makeTempDir(), 'state.json');
+  writeSampleJson(inputDir, 'lecture-01.json', SAMPLE_TRANSCRIPT_1);
+
+  const client = makeMockClient();
+  const result = await processAll(inputDir, { dryRun: true, force: false, estimate: false, yes: false }, client, manifestPath, outputDir);
+
+  assert.equal(client._countTokensCount.value, 0, 'countTokens should not be called during dry-run');
+  assert.equal(client._callCount.value, 0, 'messages.create should not be called during dry-run');
 });
