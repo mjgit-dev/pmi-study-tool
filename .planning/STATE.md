@@ -2,16 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
-status: planning
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-21T16:22:07.017Z"
-last_activity: 2026-03-21 — v1.1 roadmap revised (ENHA-06 added to Phase 6; Phase 7 compiler-only constraint documented)
+status: unknown
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-21T18:06:15.802Z"
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -21,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
 
 **Core value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
-**Current focus:** Phase 5 — Cost Estimation (first phase of v1.1)
+**Current focus:** Phase 05 — cost-estimation
 
 ## Current Position
 
-Phase: 5 of 8 (Cost Estimation)
-Plan: — (not yet planned)
-Status: Ready to plan
-Last activity: 2026-03-21 — v1.1 roadmap revised (ENHA-06 added to Phase 6; Phase 7 compiler-only constraint documented)
-
-Progress: [░░░░░░░░░░] 0% (v1.1)
+Phase: 05 (cost-estimation) — EXECUTING
+Plan: 1 of 2
 
 ## Performance Metrics
 
@@ -49,6 +43,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1)
 | 4. Compilation | 2 | Complete |
 
 *v1.1 metrics will accumulate during execution*
+| Phase 05 P01 | 107 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -64,6 +59,8 @@ Recent decisions affecting v1.1:
 - Glossary deduplication: normalize term keys to lowercase before dedup; first-occurrence definition wins
 - Phase 6: ENHA-06 re-classification pass calls AI only for ECO tagging — must not regenerate notes, questions, or flashcards
 - Phase 7: Glossary is a compiler-only feature reading existing ## Flashcards sections — zero new API calls
+- [Phase 05]: estimateCost always uses MAX_OUTPUT_TOKENS (8192) for output cost — upper bound by design, documented in CLI table footnote
+- [Phase 05]: countLectureTokens passes full { model, system, messages } to client.beta.messages.countTokens to avoid 30-50% cost underestimate
 
 ### Pending Todos
 
@@ -85,6 +82,6 @@ v1.1 watch items:
 
 ## Session Continuity
 
-Last session: 2026-03-21T16:22:07.014Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-cost-estimation/05-CONTEXT.md
+Last session: 2026-03-21T18:06:15.799Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None

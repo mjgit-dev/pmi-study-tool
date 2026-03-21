@@ -9,7 +9,7 @@ Requirements for v1.1 Study Intelligence. Continues from v1.0 (phases 1-4 comple
 
 ### Cost Estimation
 
-- [ ] **ENHA-03**: User sees estimated API cost (per-lecture and total) for pending lectures before the processor runs, and must confirm before the batch starts
+- [x] **ENHA-03**: User sees estimated API cost (per-lecture and total) for pending lectures before the processor runs, and must confirm before the batch starts
 
 ### ECO Domain Tagging
 
@@ -66,7 +66,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ENHA-03 | Phase 5 | Pending |
+| ENHA-03 | Phase 5 | Complete |
 | ENHA-01 | Phase 6 | Pending |
 | ENHA-06 | Phase 6 | Pending |
 | ENHA-04 | Phase 6 | Pending |

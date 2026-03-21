@@ -86,7 +86,7 @@ Plans:
 | 2. Processing Pipeline | v1.0 | 2/2 | Complete | 2026-03-20 |
 | 3. AI Content Generation | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 4. Compilation and Claude Projects Package | v1.0 | 2/2 | Complete | 2026-03-21 |
-| 5. Cost Estimation | v1.1 | 0/2 | Not started | - |
+| 5. Cost Estimation | 1/2 | In Progress|  | - |
 | 6. ECO Domain Tagging | v1.1 | 0/? | Not started | - |
 | 7. Glossary Extraction | v1.1 | 0/? | Not started | - |
 | 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |
