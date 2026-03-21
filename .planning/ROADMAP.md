@@ -53,7 +53,11 @@ Plans:
   2. User can run a re-classification command that adds ECO tags to already-processed lectures using a lightweight AI call — notes, questions, and flashcards are not regenerated and no existing content is modified
   3. After processing or re-classification, the CLI prints a per-domain lecture count (e.g., People: 12 / Process: 20 / Business Environment: 8)
   4. The compiled CLAUDE_INSTRUCTIONS.md includes the current ECO domain weight percentages and a per-domain lecture breakdown
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 06-01-PLAN.md — Core ECO prompt module + processor integration (ENHA-01, ENHA-04)
+- [ ] 06-02-PLAN.md — ECO re-classification CLI tool (ENHA-06)
+- [ ] 06-03-PLAN.md — Compiler ECO domain table in CLAUDE_INSTRUCTIONS.md (ENHA-05)
 
 ### Phase 7: Glossary Extraction
 **Goal**: All PMI terms from all processed lectures are compiled into a single searchable reference file in the claude-package/ directory using only the existing flashcard sections — no new API calls, no re-processing of any lecture
@@ -87,6 +91,6 @@ Plans:
 | 3. AI Content Generation | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 4. Compilation and Claude Projects Package | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 5. Cost Estimation | 2/2 | Complete   | 2026-03-21 | - |
-| 6. ECO Domain Tagging | v1.1 | 0/? | Not started | - |
+| 6. ECO Domain Tagging | v1.1 | 0/3 | Not started | - |
 | 7. Glossary Extraction | v1.1 | 0/? | Not started | - |
 | 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |
