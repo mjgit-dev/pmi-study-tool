@@ -2,14 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
-status: in_progress
-stopped_at: Roadmap revised — ENHA-06 added to Phase 6, Phase 7 compiler-only constraint documented
-last_updated: "2026-03-21T00:00:00.000Z"
+status: planning
+stopped_at: Phase 5 context gathered
+last_updated: "2026-03-21T16:22:07.017Z"
+last_activity: 2026-03-21 — v1.1 roadmap revised (ENHA-06 added to Phase 6; Phase 7 compiler-only constraint documented)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -33,6 +35,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1)
 ## Performance Metrics
 
 **Velocity (v1.0 baseline):**
+
 - Total plans completed: 8
 - v1.0 phases: 4 phases, 8 plans, 2 days
 
@@ -54,6 +57,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1)
 All key decisions logged in PROJECT.md Key Decisions table.
 
 Recent decisions affecting v1.1:
+
 - Use `countTokens({ model, system, messages })` — not just messages — to avoid 30-50% cost underestimate
 - ECO domain weights stored as a config constant (not hardcoded strings) — July 9, 2026 changeover to 33/41/26 must be documented alongside current 42/50/8
 - Manifest schema: add null-guards for all new fields + schemaVersion: 2 in Phase 6 (first phase to write new manifest fields)
@@ -68,17 +72,19 @@ None.
 ### Blockers/Concerns
 
 Carried from v1.0 (not in v1.1 scope — deferred to v2):
+
 - Full-scale pipeline test with 100+ transcripts (only 2 tested at v1.0)
 - H1 heading collision in compiled output (RELI-02)
 - Processor low-word-count guard missing (RELI-01)
 
 v1.1 watch items:
+
 - Phase 6: Verify LLM ECO tag output reliability with 3-5 real transcripts before building full validation layer
 - Phase 5: Cost estimate uses max_tokens (8192) as worst-case upper bound — actual is 1,500–3,000 tokens; document as conservative estimate in CLI display
 - Phase 6: Re-classification pass (ENHA-06) must isolate the ECO-only prompt from the full processing prompt to avoid accidental content regeneration
 
 ## Session Continuity
 
-Last session: 2026-03-21
-Stopped at: v1.1 roadmap revised — ready to plan Phase 5 (Cost Estimation)
-Resume file: None
+Last session: 2026-03-21T16:22:07.014Z
+Stopped at: Phase 5 context gathered
+Resume file: .planning/phases/05-cost-estimation/05-CONTEXT.md
