@@ -23,7 +23,7 @@
 
 - [x] **OUTP-01**: Processed content is assembled into one markdown file per course section (not per lecture) optimized for Claude Projects ingestion
 - [x] **OUTP-02**: A compiled handbook is generated as a single reference document with a linked table of contents
-- [ ] **OUTP-03**: A Claude Projects system prompt file is generated, instructing Claude how to quiz and assist with PMP study
+- [x] **OUTP-03**: A Claude Projects system prompt file is generated, instructing Claude how to quiz and assist with PMP study
 
 ## v2 Requirements
 
@@ -66,7 +66,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROC-03 | Phase 3 | Complete |
 | OUTP-01 | Phase 4 | Complete |
 | OUTP-02 | Phase 4 | Complete |
-| OUTP-03 | Phase 4 | Pending |
+| OUTP-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 11 total
