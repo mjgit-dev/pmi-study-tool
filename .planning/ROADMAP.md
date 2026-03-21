@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Extraction** - Browser script reliably captures and cleans Udemy transcripts with validation (completed 2026-03-20)
 - [x] **Phase 2: Processing Pipeline** - Manifest-backed pipeline processes transcripts into structured notes via Anthropic API (completed 2026-03-20)
-- [ ] **Phase 3: AI Content Generation** - Pipeline extended to produce practice questions and flashcards in a single API call per lecture
+- [x] **Phase 3: AI Content Generation** - Pipeline extended to produce practice questions and flashcards in a single API call per lecture (completed 2026-03-21)
 - [ ] **Phase 4: Compilation and Claude Projects Package** - Processed content assembled into section-scoped files, compiled handbook, and system prompt
 
 ## Phase Details
@@ -73,7 +73,11 @@ Plans:
   2. A single compiled handbook file exists with a linked table of contents covering all processed lectures
   3. A CLAUDE_INSTRUCTIONS.md system prompt file exists that instructs Claude how to quiz the user and assist with PMP study
   4. User can upload the section files and handbook to Claude Projects and receive accurate, grounded answers to questions about specific lecture content
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Build compiler pure-function modules (frontmatter, sections, grouper, builder) with TDD tests
+- [ ] 04-02-PLAN.md — Wire compiler.js CLI, build system prompt, and end-to-end verification
 
 ## Progress
 
@@ -84,5 +88,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Extraction | 2/2 | Complete   | 2026-03-20 |
 | 2. Processing Pipeline | 2/2 | Complete   | 2026-03-20 |
-| 3. AI Content Generation | 1/2 | In Progress|  |
-| 4. Compilation and Claude Projects Package | 0/? | Not started | - |
+| 3. AI Content Generation | 2/2 | Complete   | 2026-03-21 |
+| 4. Compilation and Claude Projects Package | 0/2 | Not started | - |
