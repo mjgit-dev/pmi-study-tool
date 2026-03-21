@@ -1,181 +1,166 @@
 # Project Research Summary
 
-**Project:** PMI Study Tool (Local Transcript Processor)
-**Domain:** AI-powered transcript processing + PMP exam preparation
-**Researched:** 2026-03-20
-**Confidence:** MEDIUM-HIGH
+**Project:** PMI Study Tool v1.1 — Study Intelligence
+**Domain:** Node.js CLI pipeline — Anthropic API content enrichment
+**Researched:** 2026-03-21
+**Confidence:** HIGH
 
 ## Executive Summary
 
-This project is a local CLI pipeline that converts Udemy course transcripts into structured PMP study materials — structured notes, scenario-based practice questions, flashcards, and a compiled handbook — optimized for upload into a Claude Project for interactive exam prep. The tool is single-user, runs locally, and relies on Claude Projects as the study interface rather than building any custom UI. The correct mental model is a data-processing pipeline with three discrete stages: browser-based extraction, AI-powered processing, and file assembly. Research is clear that the Anthropic Message Batches API (or sequential calls with retry logic) and a persistent processing manifest are the two non-negotiable technical choices for the pipeline to be reliable at 100+ lectures.
+PMI Study Tool v1.1 adds four study intelligence features to a proven v1.0 pipeline: ECO domain tagging per lecture, glossary extraction and deduplication, cost estimation before batch runs, and weak-area hint injection into the Claude Projects system prompt. The existing stack (Node.js CommonJS, `@anthropic-ai/sdk` 0.80.0, no external test frameworks) is locked and fully sufficient — all four features require zero new npm dependencies. Research confirms this is a pure extension project: new modules slot into well-defined boundaries without requiring any structural changes to the pipeline's two-stage processor-then-compiler architecture.
 
-The recommended approach is a lean Node.js + TypeScript CLI using the official `@anthropic-ai/sdk`. The critical architecture insight is that output files must be organized per course section (8–12 files), not per lecture (100+ files), or Claude Projects' retrieval degrades badly. A two-pass AI strategy is recommended: `claude-haiku` for notes and flashcards (cost-efficient), `claude-sonnet` optionally for scenario-based PMP questions (higher quality needed for exam prep). Total processing cost at scale is very low — under $1 for most courses — making cost a minor concern if prompts are consolidated into a single API call per lecture.
+The recommended build order is cost estimation first (fully independent, immediately reduces batch-run risk), ECO tagging second (establishes the data contract that flows through the rest of the pipeline), glossary extraction third (builds on the split-section parsing already extended for ECO), and weak-area injection last (pure compiler output concern, no API involvement). This ordering is driven by data-flow dependencies — ECO tag must be in the YAML frontmatter before the compiler can use it, and the cost estimation pre-flight check should be verified on the expanded prompt before any batch run occurs.
 
-The top risks are: (1) the Udemy DOM script silently extracting empty or wrong content due to class name changes — mitigated by using `data-*`/`aria-label` selectors and word-count validation; (2) mid-batch silent failures from API rate limits — mitigated by a persistent state manifest and exponential backoff from day one; and (3) Claude generating hallucinated PMP content on thin transcripts — mitigated by prompt instructions that ground output strictly in the provided transcript. The PMP exam tests situational judgment, not recall — this must be enforced in every quiz generation prompt or the output study material will be misaligned with the actual exam format.
+The primary risks are a July 9, 2026 PMI ECO percentage change (People/Process/Business Environment shifts from 42/50/8 to 33/41/26) that will silently produce incorrect study guidance if percentages are hardcoded as strings, and a cost estimation error if the system prompt tokens are excluded from the `countTokens()` call (which causes a 30-50% underestimate). Both are preventable with a single config constant for domain weights and by passing `{ model, system, messages }` — not just `messages` — to `client.messages.countTokens()`.
+
+---
 
 ## Key Findings
 
 ### Recommended Stack
 
-The stack is intentionally minimal for a local tool. Node.js 20/22 LTS with TypeScript gives type safety across the I/O-heavy pipeline without requiring a complex build environment. The `@anthropic-ai/sdk` is required (not bare `fetch`) because it handles batch polling, streaming, auth, and retry mechanics correctly. The Message Batches API is the optimal processing pattern for 100+ lectures — async, 50% cheaper per token, up to 10,000 requests per batch. For smaller runs, sequential calls with `p-retry` exponential backoff also work.
+The v1.0 stack requires no changes. All v1.1 capabilities are already available via `@anthropic-ai/sdk` 0.80.0's `client.messages.countTokens()` method and Node.js built-ins (`node:fs`, `node:path`, `node:readline`). The relevant alternative tools (tiktoken-node, remark/unified markdown parsers, inquirer for prompts, ESM module format) were each evaluated and rejected — they add dependency weight for problems the existing stack already solves.
 
 **Core technologies:**
-- `Node.js 20/22 LTS`: runtime — LTS stability for a local tool, native ESM support
-- `TypeScript ~5.4+` with `tsx`: type safety + fast dev iteration — I/O-heavy pipeline benefits from types
-- `@anthropic-ai/sdk`: Anthropic API — handles batches, retries, streaming, auth correctly
-- `p-limit` + `p-retry`: concurrency control and retry — critical for reliable 100+ lecture runs
-- `commander` + `ora` + `chalk`: CLI interface — progress visibility and operator experience
-- `glob` + `gray-matter`: file discovery and markdown metadata — keeps output organized
-- Vanilla JS browser script: Udemy DOM extraction — runs in DevTools, no build step, no ToS risk
-- `dotenv`: API key management — API key must never be hardcoded
-
-What NOT to use: LangChain, vector databases, Electron, Next.js/React, SQLite, browser extensions. All are over-engineering for a single-user local pipeline.
+- `@anthropic-ai/sdk` 0.80.0: API calls and token counting — already installed, `countTokens()` confirmed available in this version
+- `node:readline` (built-in): yes/no confirmation prompt for cost estimate — 4 lines, no package needed
+- `node:fs` / `node:path` (built-in): config file reading (`weak-areas.json`), manifest access, output writing
+- Regex on machine-generated markdown: flashcard extraction for glossary — correct for controlled-format output; AST parsers would be overengineering
 
 ### Expected Features
 
-The feature dependency chain is strictly linear: extraction must work before processing can start, and processing must be solid before compiling a handbook. The processing manifest is a cross-cutting dependency — it must be built before any batch processing begins.
+**Must have (table stakes — all four are v1.1 scope):**
+- ECO domain tag per lecture (People / Process / Business Environment) — stored in manifest and YAML frontmatter; prerequisite for all domain-aware compiler outputs
+- Glossary file (`GLOSSARY.md` in `claude-package/`) — deduplicated, alphabetically sorted; extracted from existing `## Flashcards` sections at compile time, no new API calls
+- Cost estimate before batch run (`--estimate` flag) — scoped to pending lectures only; displays per-lecture and total; requires user confirmation before proceeding
+- Weak-area hint injection — compiler reads `weak-areas.json` and appends a `## Focus Areas` section to `CLAUDE_INSTRUCTIONS.md`; backward compatible (section omitted if file absent)
 
-**Must have (table stakes):**
-- Batch transcript extraction (100+ lectures) — core pipeline entry point
-- Raw text cleaning (strip timestamps, UI text, filler words) — required before AI processing
-- Per-lecture structured notes with key concepts and summary — core output unit
-- Section/module organization mirroring Udemy course structure — preserves navigation model
-- Markdown output optimized for Claude Projects ingestion — primary delivery format
-- Compiled handbook (single document with TOC) — the reference artifact
-- PMP practice questions — scenario-based situational judgment, not recall — non-negotiable for exam alignment
-- Flashcard content (term to definition) — quick reference
-- Processing manifest with idempotent re-run and resume — critical for reliability at 100+ lectures
-- Claude Projects system prompt file (CLAUDE_INSTRUCTIONS.md) — high-leverage, tells Claude how to quiz
+**Should have (differentiators — add after P1 complete):**
+- ECO weight-aware study guidance in system prompt — compiler reads domain tag distribution and injects weighting note; depends on ECO tagging being complete
+- Per-domain lecture count in CLI output — trivial aggregation over manifest data; high value-to-effort ratio
+- Post-run cost summary — sums `response.usage` across all lectures; provides actual vs. estimated comparison
 
-**Should have (differentiators):**
-- PMI domain tagging (People 42%, Process 50%, Business Environment 8%) — aligns study to exam weight
-- ECO (Exam Content Outline) mapping per lecture — ties content to official PMI blueprint
-- Weak-area hint injection in quiz prompts — personalizes study focus
-- Processing cost estimate before each run — prevents surprise API spend
-- Glossary auto-extraction across all lectures — single searchable reference
-- Examples bank (real-world scenarios per concept) — PMP exam is context-heavy
-
-**Defer (v2+):**
-- PMI ECO mapping and domain tagging
-- Weak-area tracking and hint injection
-- Glossary auto-extraction
-- Processing cost estimator
-- Examples bank with real-world scenarios
+**Defer to v2+:**
+- Sub-task level ECO tagging (26 ECO tasks) — requires validation dataset not available
+- Anki/CSV glossary export — out of scope for Claude Projects workflow
+- Automated weak-area scoring from quiz history — requires session tracking infrastructure that does not exist
 
 ### Architecture Approach
 
-The system is a three-stage sequential pipeline: a browser DevTools console script extracts Udemy transcript JSON, a Node.js processor sends each transcript to the Anthropic API and writes structured markdown output, and a compiler assembles the processed files into a handbook and Claude Projects upload package. Each stage is independently runnable and produces durable file artifacts — no stage needs to hold state in memory between runs. The processing manifest in Stage 2 is the backbone of reliability: it tracks `pending/complete/failed` per lecture and enables resume without reprocessing.
+The v1.0 pipeline is a clean two-stage architecture: the processor reads transcripts and calls the Anthropic API to produce per-lecture `.md` files with YAML frontmatter; the compiler reads those files, groups by section, and writes the `claude-package/` output directory. All four v1.1 features integrate at well-defined points within this existing architecture — two new modules (`processor/cost-estimate.js` and `compiler/glossary.js`) plus targeted modifications to six existing modules. No new pipeline stages are introduced and the file-system boundary between processor output and compiler input is unchanged. The most fragile integration point is the `## heading` marker protocol between `prompt.js` and `sections.js` — both sides must use identical heading strings, and missing sections must degrade gracefully (null/empty, not errors that abort the batch).
 
-**Major components:**
-1. Stage 1 — Extractor (browser DevTools script): reads Udemy DOM, outputs raw `transcripts.json` with lecture metadata
-2. Stage 2 — Processor (Node.js + Anthropic API): reads transcript JSON, runs AI pass per lecture, writes per-lecture markdown; manifest tracks all state
-3. Stage 3 — Compiler (Node.js file assembly): reads processed markdown files, produces compiled handbook, section-scoped Claude Projects files, and system prompt
-
-**Output file structure for Claude Projects:** one file per course section (8–12 files), not per lecture. This is an architectural constraint driven by Claude Projects retrieval quality, not a preference.
+**Major components added or modified:**
+1. `processor/cost-estimate.js` (NEW) — token estimation and cost display before batch loop; calls `countTokens()` with full `{model, system, messages}` shape
+2. `compiler/glossary.js` (NEW) — cross-lecture aggregation, case-insensitive deduplication, alphabetical sort; pure function over `lectures[]` array
+3. `processor/prompt.js` (MODIFY) — add `## ECO Domain` and `## Glossary Terms` output sections to system prompt
+4. `processor/markdown.js` + `compiler/frontmatter.js` (MODIFY) — write and read `ecoTag` YAML frontmatter field
+5. `compiler/system-prompt.js` (MODIFY) — accept optional `weakAreas[]` param; append Focus Areas block when provided
+6. `processor/processor.js` + `compiler/compiler.js` (MODIFY) — wire new modules at batch entry points; parse `--weak-areas` CLI flag
 
 ### Critical Pitfalls
 
-1. **Udemy DOM selectors targeting CSS classes** — Udemy uses React with hashed class names that change on deploys. Target `data-*` attributes and `aria-label` values. Validate extracted content with a minimum word count threshold (300+ words) before accepting a transcript.
+1. **ECO percentages hardcoded as strings** — will silently produce wrong exam guidance after July 9, 2026 (new weights: People 33%, Process 41%, Business Environment 26%). Store in a single config object with a `lastVerified` date and upcoming values documented. Never embed `"42%"` or `"8%"` in prompt text or output templates.
 
-2. **Silent mid-batch failures from API rate limits** — 429 errors without retry logic produce a handbook with holes the user discovers while studying. Build the processing manifest and exponential backoff before running any real batch. Run a 5-10 lecture pilot first.
+2. **Cost estimate excludes system prompt tokens** — the system prompt is ~600 tokens per call; omitting it from `countTokens()` causes a 30-50% underestimate across a 100-lecture batch. Always pass `{ model, system, messages }` — `system` is a confirmed accepted parameter in SDK 0.80.0's `MessageCountTokensParams`.
 
-3. **Multiple API calls per lecture multiplying cost** — three separate calls (notes, questions, flashcards) triples token spend across 100+ lectures. Use a single unified prompt per lecture generating all content types in one response.
+3. **Manifest schema breaks on pre-v1.1 entries** — `processing-state.json` has no version field; old entries lack `ecoTag` and other new fields. Every new-field read must use `entry.newField ?? 'defaultValue'`. Add `schemaVersion: 2` and test the full compiler pipeline against the existing manifest before shipping any phase that writes new fields.
 
-4. **Claude Projects context saturation from too many files** — uploading 100+ per-lecture files overwhelms retrieval; Claude gives vague blended answers. Compile output to one file per section (8–12 files max). Test retrieval with known-answer questions before committing to structure.
+4. **ECO tag LLM output not validated** — the model may return values outside the three-value allowlist. Constrain the prompt to output exactly `People`, `Process`, or `BusinessEnvironment`; any other value defaults to `'unclassified'`. Emit a domain distribution summary after classification for spot-checking.
 
-5. **AI hallucinating PMP content on thin transcripts** — Claude fills gaps in sparse transcripts with plausible but wrong process group assignments, outdated PMBOK 6 terminology, and invented ITTOs. Prompt must include explicit instruction: "Only generate content directly supported by the transcript below." Spot-check 10% of output before trusting it.
+5. **Glossary deduplication silently fails on case variants** — "Project Charter" and "project charter" are the same term. Normalize all term keys (lowercase, trimmed) before inserting into the deduplication map; first-occurrence definition wins. Never deduplicate on raw term text.
+
+---
 
 ## Implications for Roadmap
 
-Based on research, the architecture's three discrete stages and the feature dependency chain (extraction → processing → compilation) map directly to phases. The processing manifest and DOM extraction validation are the two highest-leverage early investments.
+Based on research, suggested phase structure:
 
-### Phase 1: Transcript Extraction
+### Phase 1: Cost Estimation
+**Rationale:** Fully independent of the other three features; addresses the highest trust risk (users will not run a blind 100-lecture batch); establishes the `countTokens()` usage pattern and validates the expanded prompt's cost impact before ECO and glossary additions go live. Architecture research explicitly identifies this as the correct first step.
+**Delivers:** `processor/cost-estimate.js`; `--estimate` flag on processor; pending-lecture-scoped estimate with per-lecture and total cost display; yes/no confirmation prompt via `node:readline`.
+**Addresses:** Cost estimate (table stakes P1), cost estimate scoped to pending lectures (differentiator P1).
+**Avoids:** Pitfall 5 (system prompt tokens excluded from estimate), prompt expansion cost surprises during later phases.
 
-**Rationale:** Everything downstream depends on reliable transcript data. Validate DOM extraction works before investing in any processing logic. Fail fast here.
-**Delivers:** `transcripts.json` with all lectures, sections, and metadata; validation output showing word counts per lecture
-**Addresses:** batch transcript extraction, raw text cleaning (timestamp stripping), section/module organization
-**Avoids:** Pitfall 1 (CSS class fragility — use data-* selectors from the start), Pitfall 6 (UI text capture), Pitfall 7 (timestamp noise), Pitfall 9 (account suspension — semi-manual design only)
+### Phase 2: ECO Domain Tagging
+**Rationale:** Establishes the data contract (`ecoTag` in YAML frontmatter) that the compiler relies on in phases 3 and 4. Must come before any compiler changes that consume domain data. Validates the `sections.js` section-split parser extension before glossary adds a second new `##` section using the same pattern.
+**Delivers:** `## ECO Domain` prompt section; `ecoTag` persisted in YAML frontmatter and manifest; ECO domain label in section notes file lecture headings (`## Lecture Title [People]`); domain distribution summary in CLI output.
+**Addresses:** ECO domain tag per lecture (table stakes P1), ECO weight-aware study guidance (differentiator P2), per-domain lecture count (differentiator P2).
+**Avoids:** Pitfall 1 (hardcoded percentages — config constant established here with July 2026 changeover documented), Pitfall 3 (manifest schema — null-guards and schemaVersion added here), Pitfall 7 (no verification layer — distribution summary built into the phase).
 
-### Phase 2: Processing Pipeline Foundation
+### Phase 3: Glossary Extraction
+**Rationale:** Builds on the `sections.js` split extension from Phase 2 — adding a `## Glossary Terms` section to the prompt is additive to the pattern already established and tested. `compiler/glossary.js` is a pure function over the `lectures[]` array that Phase 2's frontmatter changes already typed out. Testable in isolation with mock lecture data before wiring into the full compiler.
+**Delivers:** `## Glossary Terms` prompt section; `compiler/glossary.js`; `GLOSSARY.md` in `claude-package/`; deduplicated, alphabetically sorted glossary across all processed lectures; glossary term count logged at compile time.
+**Addresses:** Glossary file (table stakes P1), glossary deduplication (differentiator P1), glossary term count in compiler log (P3).
+**Avoids:** Pitfall 4 (deduplication harder than expected — normalization built into extraction, not deferred to a later pass), Anti-Pattern 2 (glossary terms stored per-lecture only, never aggregated).
 
-**Rationale:** The manifest and retry infrastructure must exist before any real batch processing. Build the skeleton before adding AI calls; iterate on a 5-lecture pilot.
-**Delivers:** Processing manifest, per-lecture markdown output with notes and summaries, pilot validation on 5–10 lectures
-**Uses:** `@anthropic-ai/sdk`, `p-retry`, `gray-matter`, `dotenv`
-**Implements:** Stage 2 Processor with manifest, exponential backoff, idempotent file naming
-**Avoids:** Pitfall 2 (silent mid-batch failures), Pitfall 3 (cost overrun — single unified prompt), Pitfall 8 (no idempotent re-run)
-
-### Phase 3: AI Content Generation
-
-**Rationale:** Once the pipeline skeleton is proven reliable on a pilot, extend the prompts to generate all content types in a single API call per lecture and process the full course.
-**Delivers:** Complete per-lecture markdown files including key concepts, scenario-based PMP practice questions, and flashcard tables; `processing-state.json` showing 100% completion
-**Uses:** `claude-haiku` (notes/flashcards), optionally `claude-sonnet` (scenario questions)
-**Implements:** Unified prompt generating all output types in one call; transcript-grounded-only instruction
-**Avoids:** Pitfall 5 (PMP hallucination), Pitfall 10 (recall-level questions — prompt must require scenario-based format with examples)
-
-### Phase 4: Compilation and Claude Projects Package
-
-**Rationale:** Assembly only makes sense after all processing is validated. Output structure decisions (section-scoped files) must be made before compilation.
-**Delivers:** `handbook.md` (compiled reference), `claude-projects-upload/` folder (8–12 section files, quiz compilation, flashcard compilation), `CLAUDE_INSTRUCTIONS.md` system prompt
-**Implements:** Stage 3 Compiler
-**Avoids:** Pitfall 4 (context saturation — compile to section-scoped files, validate retrieval quality before finalizing structure)
-
-### Phase 5: Polish and Reliability Hardening
-
-**Rationale:** Once the full pipeline works end-to-end, add operator experience improvements that reduce friction on re-runs and future course updates.
-**Delivers:** Pre-run cost estimator, `--force` flag for re-processing specific lectures, better error messages, manifest status UI
-**Addresses:** Processing cost estimate feature, improved error handling, `--force` reprocessing flag
+### Phase 4: Weak-Area Hint Injection
+**Rationale:** No API changes, no new data structures — pure compiler output concern. Has no code-level dependencies on Phases 1-3, but building last means the compiler is already fully updated from ECO and glossary work, reducing integration risk. Simplest feature; clean milestone close.
+**Delivers:** `compiler/system-prompt.js` updated to accept `weakAreas[]`; `weak-areas.json` config file support; `## Focus Areas` section in `CLAUDE_INSTRUCTIONS.md` when config is present; backward-compatible when config is absent.
+**Addresses:** Weak-area hint injection (table stakes P1).
+**Avoids:** Pitfall 6 (user-controlled text interpolated directly into system prompt — sanitize topic strings before injection: strip `#` headers, backticks, truncate to 100 chars per topic, limit to 10 topics).
 
 ### Phase Ordering Rationale
 
-- Extraction first: no pipeline without reliable transcript input. DOM fragility is the highest-probability point of failure.
-- Manifest before batch: without durable state tracking, any mid-run failure requires starting over. This is not optional.
-- Pilot before full run: 5-lecture test validates prompt quality and cost before committing to 100+ lectures.
-- Section-scoped output is an architectural decision, not a cosmetic one — must be decided in Phase 4, not retrofitted.
+- **Cost estimation first** because the expanded prompt must be validated for cost impact before committing to a 100-lecture batch. Running Phase 1 first means the cost estimation feature itself will catch any surprise from adding `## ECO Domain` and `## Glossary Terms` to the system prompt in phases 2 and 3.
+- **ECO before glossary** because ECO tagging establishes and validates the `sections.js` split pattern that glossary reuses. Building on a known-working pattern reduces integration risk on the more complex cross-lecture aggregation.
+- **Weak-area injection last** because it is independent of the other three features at the code level. Building it after the compiler is fully updated by phases 2 and 3 avoids any risk of its changes interfering with ECO/glossary integration testing.
+- **Manifest schema versioning (null-guards + `schemaVersion`)** must be addressed in Phase 2 — the first phase that writes new manifest fields — and verified before any compiler changes in Phase 3.
 
 ### Research Flags
 
 Phases likely needing deeper research during planning:
-- **Phase 1 (Extraction):** Udemy DOM structure is undocumented and subject to change. Will need inspection of the actual Udemy player DOM at implementation time to identify stable selectors.
-- **Phase 3 (AI Content Generation):** Unified prompt design for PMP scenario questions requires iteration. Prompt engineering for scenario-based questions with correct answer grounding needs empirical testing, not just design.
+- **Phase 2 (ECO Tagging):** LLM constrained output reliability is well-understood in general but project-specific; a short spike with 3-5 real transcripts is recommended before designing the full validation layer. Specifically: verify that the model reliably outputs exactly one of the three allowed values when the prompt format is `## ECO Domain\nPeople`, `Process`, or `Business Environment` with no explanation.
 
-Phases with standard patterns (can skip research-phase):
-- **Phase 2 (Pipeline Foundation):** Manifest pattern, exponential backoff with `p-retry`, and `@anthropic-ai/sdk` usage are well-documented with standard patterns.
-- **Phase 4 (Compilation):** File system assembly with Node.js `fs/promises` is straightforward; no novel patterns needed.
-- **Phase 5 (Polish):** CLI improvements with `commander` and `ora` are standard.
+Phases with standard patterns (skip research-phase):
+- **Phase 1 (Cost Estimation):** `countTokens()` API is fully documented and confirmed in installed SDK; implementation is deterministic.
+- **Phase 3 (Glossary):** Pure string aggregation and deduplication with no novel patterns.
+- **Phase 4 (Weak-Area Hints):** Pure function signature extension and config file read — no research needed.
+
+---
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Node.js + TypeScript + `@anthropic-ai/sdk` are definitive choices. Message Batches API existence should be verified at docs.anthropic.com, but sequential-with-retry is a valid fallback. |
-| Features | HIGH | PMP exam format constraints (situational judgment) are well-known. Feature dependency chain is unambiguous. v1/v2 split is clear. |
-| Architecture | HIGH | Three-stage pipeline is the natural shape of this problem. Section-scoped output constraint for Claude Projects is a critical finding with high confidence. |
-| Pitfalls | MEDIUM-HIGH | DOM fragility and API retry patterns are well-understood. Claude Projects context saturation behavior is based on known retrieval limitations — should be validated empirically with real data. |
+| Stack | HIGH | Direct codebase inspection; SDK 0.80.0 installed version confirmed; `countTokens()` availability verified against installed package source at `processor/node_modules/@anthropic-ai/sdk/` |
+| Features | HIGH | Four v1.1 features sourced from PMI official ECO docs plus Anthropic SDK docs; ECO percentage change confirmed via PMI official announcement with specific July 9, 2026 date |
+| Architecture | HIGH | Direct inspection of all 9 processor and compiler modules; data flow traced end-to-end; all integration boundaries and fragile points identified |
+| Pitfalls | HIGH | All 7 critical pitfalls verified against installed SDK source, existing manifest JSON shape, and confirmed PMI ECO 2026 change date; not inference-based |
 
-**Overall confidence:** MEDIUM-HIGH
+**Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Message Batches API availability:** Research recommends it but notes it should be verified at docs.anthropic.com before the processing phase. The sequential-with-retry pattern is a complete fallback if batch API has changed.
-- **Udemy DOM selectors:** Specific `data-*` attributes and `aria-label` values in the Udemy player cannot be known until implementation. Phase 1 must include DOM inspection as a first step.
-- **Prompt quality for scenario-based questions:** Cannot be determined without empirical testing. A pilot run of 5–10 lectures in Phase 2/3 should include spot-check of generated questions against the PMI exam format.
-- **Claude Projects file size limits:** The 25,000 token per file guideline should be tested; actual limits may differ.
+- **ECO percentage update timing:** July 9, 2026 changeover is confirmed. The Phase 2 config constant must document both the current (42/50/8) and upcoming (33/41/26) values with a `lastVerified` annotation. The roadmapper should include a post-July-2026 maintenance note.
+- **Cost estimation approach — heuristic vs. SDK call:** ARCHITECTURE.md recommends a local heuristic (`wordCount * 1.35`) for speed, while STACK.md prefers the exact SDK `countTokens()` call (free, no extra latency per lecture for a pre-flight sample). Phase 1 planning should resolve this — recommend the SDK call as primary since it costs nothing and produces exact counts; the heuristic is only needed if the SDK call's rate limit becomes a concern for very large batches.
+- **Output token estimate conservatism:** No mechanism can predict output tokens before generation. The current plan uses `max_tokens` (8192) as a worst-case upper bound. Actual usage is empirically 1,500-3,000 tokens per lecture. Phase 1 should document this as a conservative upper bound in the CLI display, not a mean estimate, to avoid user confusion when actual costs are lower.
+- **Glossary completeness vs. PMI Lexicon:** The PMI Lexicon v5.0 defines ~200 canonical terms; the compiled glossary will cover 150-250 unique terms across a full course but there is no automated mechanism to validate coverage against the official lexicon. Accept this limitation for v1.1.
+
+---
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Anthropic official SDK documentation — `@anthropic-ai/sdk`, Message Batches API pattern
-- PMI Exam Content Outline (ECO) — domain weight distribution (People 42%, Process 50%, Business Environment 8%)
+- `c:/pmi-study-tool/processor/processor.js`, `prompt.js`, `markdown.js`, `manifest.js` — pipeline architecture, data shapes, and CommonJS module patterns
+- `c:/pmi-study-tool/compiler/compiler.js`, `sections.js`, `frontmatter.js`, `grouper.js`, `builder.js`, `system-prompt.js` — compiler architecture and integration boundaries
+- `c:/pmi-study-tool/processor/node_modules/@anthropic-ai/sdk/src/resources/messages/messages.ts` — `MessageCountTokensParams` interface; `system` field confirmed optional in SDK 0.80.0
+- `c:/pmi-study-tool/processor/package-lock.json` — confirms `@anthropic-ai/sdk@0.80.0` installed
+- https://platform.claude.com/docs/en/about-claude/pricing — claude-sonnet-4-6 pricing ($3.00/MTok input, $15.00/MTok output); verified 2026-03-21
+- https://platform.claude.com/docs/en/build-with-claude/token-counting — `countTokens()` API; confirmed free, independent rate limits, Node.js examples
+- https://www.pmi.org/certifications/project-management-pmp/new-exam — July 9, 2026 ECO changeover; new domain weights People 33% / Process 41% / Business Environment 26%
+- https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/new-pmp-examination-content-outline-2026.pdf — PMI 2026 Exam Content Outline (official)
 
 ### Secondary (MEDIUM confidence)
-- Community experience with Udemy DOM structure — selector stability guidance (`data-*` over class names)
-- Claude Projects retrieval behavior — context saturation patterns, file count recommendations
-- Anthropic rate limiting documentation — 429 behavior, retry guidance
+- https://docs.anthropic.com/en/api/messages-count-tokens — `countTokens` API reference (WebSearch-verified, not direct library source inspection)
+- https://shrilearning.com/pmp-business-environment-2026/ — ECO 2026 domain weight context and analysis
+- https://blog.goldstandardcertifications.com/pmp-exam-2026-update-new-content-outline-guide — secondary confirmation of July 9, 2026 changeover date
+- PMI Lexicon of Project Management Terms v5.0 (January 2026) — ~200 canonical PMP terms for glossary quality baseline
 
 ### Tertiary (LOW confidence)
-- Claude Projects per-file token limits — 25,000 token guideline needs empirical validation
-- Cost estimates — Haiku pricing estimates are approximations; verify current pricing before committing
+- https://genai.owasp.org/llmrisk/llm01-prompt-injection/ — OWASP LLM01:2025 guidance for weak-area hint sanitization; general principle, not PMI-specific
+- https://dev.to/pockit_tools/llm-structured-output-in-2026-stop-parsing-json-with-regex-and-do-it-right-34pk — LLM structured output pitfalls context
 
 ---
-*Research completed: 2026-03-20*
+
+*Research completed: 2026-03-21*
 *Ready for roadmap: yes*
