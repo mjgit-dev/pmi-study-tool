@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
 status: unknown
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-21T18:06:15.802Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-21T18:10:06.084Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
 ## Current Position
 
 Phase: 05 (cost-estimation) — EXECUTING
-Plan: 1 of 2
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Plan: 1 of 2
 
 *v1.1 metrics will accumulate during execution*
 | Phase 05 P01 | 107 | 1 tasks | 2 files |
+| Phase 05 P02 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -61,6 +62,7 @@ Recent decisions affecting v1.1:
 - Phase 7: Glossary is a compiler-only feature reading existing ## Flashcards sections — zero new API calls
 - [Phase 05]: estimateCost always uses MAX_OUTPUT_TOKENS (8192) for output cost — upper bound by design, documented in CLI table footnote
 - [Phase 05]: countLectureTokens passes full { model, system, messages } to client.beta.messages.countTokens to avoid 30-50% cost underestimate
+- [Phase 05]: --estimate exits 0 after table display; --yes bypasses prompt; process.stdin.isTTY !== true guard for non-TTY; estimate gate fires only when pendingFiles.length > 0 && !dryRun
 
 ### Pending Todos
 
@@ -82,6 +84,6 @@ v1.1 watch items:
 
 ## Session Continuity
 
-Last session: 2026-03-21T18:06:15.799Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-21T18:10:06.081Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
