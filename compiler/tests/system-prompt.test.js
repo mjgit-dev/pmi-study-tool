@@ -91,3 +91,46 @@ describe('buildSystemPrompt with ecoStats', () => {
     assert.ok(result.includes('| People | 0 | 42% |'), 'Missing People row with zero count');
   });
 });
+
+describe('buildSystemPrompt with weakAreas', () => {
+  it('buildSystemPrompt(null, null) does NOT include Focus Areas', () => {
+    const result = buildSystemPrompt(null, null);
+    assert.ok(!result.includes('## Focus Areas'), 'Focus Areas section should be absent when weakAreas is null');
+  });
+
+  it('buildSystemPrompt(null, []) does NOT include Focus Areas', () => {
+    const result = buildSystemPrompt(null, []);
+    assert.ok(!result.includes('## Focus Areas'), 'Focus Areas section should be absent when weakAreas is empty array');
+  });
+
+  it('buildSystemPrompt(null, ["Risk Management", "Stakeholder Engagement"]) includes Focus Areas heading', () => {
+    const result = buildSystemPrompt(null, ['Risk Management', 'Stakeholder Engagement']);
+    assert.ok(result.includes('## Focus Areas'), 'Missing ## Focus Areas heading');
+  });
+
+  it('buildSystemPrompt with weakAreas includes topic bullet items', () => {
+    const result = buildSystemPrompt(null, ['Risk Management', 'Stakeholder Engagement']);
+    assert.ok(result.includes('- Risk Management'), 'Missing - Risk Management bullet');
+    assert.ok(result.includes('- Stakeholder Engagement'), 'Missing - Stakeholder Engagement bullet');
+  });
+
+  it('buildSystemPrompt with weakAreas includes instruction text about weak areas', () => {
+    const result = buildSystemPrompt(null, ['Risk Management']);
+    assert.ok(
+      result.includes('Pay special attention to the following topics the learner has identified as weak areas'),
+      'Missing instruction text about weak areas'
+    );
+  });
+
+  it('buildSystemPrompt with both ecoStats and weakAreas includes BOTH ECO and Focus Areas sections', () => {
+    const result = buildSystemPrompt({ People: 5, Process: 3, 'Business Environment': 2 }, ['Risk Management']);
+    assert.ok(result.includes('## ECO Domain Coverage'), 'Missing ## ECO Domain Coverage when both params provided');
+    assert.ok(result.includes('## Focus Areas'), 'Missing ## Focus Areas when both params provided');
+  });
+
+  it('buildSystemPrompt(null, weakAreas) without ecoStats has no ECO section but has Focus Areas', () => {
+    const result = buildSystemPrompt(null, ['Risk Management']);
+    assert.ok(!result.includes('## ECO Domain Coverage'), 'ECO section should be absent when no ecoStats');
+    assert.ok(result.includes('## Focus Areas'), 'Focus Areas section should be present');
+  });
+});

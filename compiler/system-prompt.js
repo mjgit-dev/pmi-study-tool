@@ -9,16 +9,19 @@ const ECO_WEIGHTS = {
 };
 
 /**
- * buildSystemPrompt(ecoStats)
+ * buildSystemPrompt(ecoStats, weakAreas)
  * Returns the markdown string for CLAUDE_INSTRUCTIONS.md — the system prompt
  * for a Claude Projects instance loaded with the compiled PMP study package.
  *
  * @param {Object|null|undefined} ecoStats - Optional domain lecture counts.
  *   Shape: { People: number, Process: number, 'Business Environment': number }
  *   When falsy, the ECO domain section is omitted (backward compatible).
+ * @param {string[]|null|undefined} weakAreas - Optional array of topic strings the
+ *   learner has identified as weak areas. When non-empty, appends a Focus Areas
+ *   section instructing Claude to prioritize those topics.
  * @returns {string} Markdown content for CLAUDE_INSTRUCTIONS.md
  */
-function buildSystemPrompt(ecoStats) {
+function buildSystemPrompt(ecoStats, weakAreas) {
   let prompt = `# PMP Study Assistant
 
 You are a PMP exam study assistant. Your ONLY knowledge base is the uploaded course files. You must ground every answer in the specific lecture content provided.
@@ -66,6 +69,15 @@ Lectures in this package by domain:
 
 When quizzing, weight your question selection proportionally to these domain percentages.
 `;
+  }
+
+  // Append Focus Areas section if weak areas are configured
+  if (Array.isArray(weakAreas) && weakAreas.length > 0) {
+    prompt += `\n## Focus Areas\n\nPay special attention to the following topics the learner has identified as weak areas. When quizzing, increase the proportion of questions from these areas. When explaining concepts, provide extra detail and examples for these topics.\n\n`;
+    for (const topic of weakAreas) {
+      prompt += `- ${topic}\n`;
+    }
+    prompt += '\n';
   }
 
   return prompt;
