@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
 status: unknown
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-21T22:21:05.697Z"
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-03-21T22:21:13.230Z"
 progress:
   total_phases: 4
   completed_phases: 2
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
 
 ## Current Position
 
-Phase: 06 (eco-domain-tagging) — EXECUTING
-Plan: 3 of 3
+Phase: 06 (eco-domain-tagging) — COMPLETE
+Plan: 3 of 3 (all plans complete)
 
 ## Performance Metrics
 
@@ -71,6 +71,8 @@ Recent decisions affecting v1.1:
 - [Phase 05]: estimateCost always uses MAX_OUTPUT_TOKENS (8192) for output cost — upper bound by design, documented in CLI table footnote
 - [Phase 05]: countLectureTokens passes full { model, system, messages } to client.beta.messages.countTokens to avoid 30-50% cost underestimate
 - [Phase 05]: --estimate exits 0 after table display; --yes bypasses prompt; process.stdin.isTTY !== true guard for non-TTY; estimate gate fires only when pendingFiles.length > 0 && !dryRun
+- [Phase 06-03]: ECO_WEIGHTS defined locally in compiler/system-prompt.js (not imported from processor) — compiler/processor are separate packages; avoids cross-package coupling
+- [Phase 06-03]: hasAnyEcoTag gate in compiler.js: pass ecoStats only when at least one lecture has a tag — prevents all-zero ECO table in pre-Phase-6 compiled packages
 
 ### Pending Todos
 
@@ -92,6 +94,6 @@ v1.1 watch items:
 
 ## Session Continuity
 
-Last session: 2026-03-21T22:20:00.000Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-03-21T22:21:13.226Z
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None
