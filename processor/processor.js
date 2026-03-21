@@ -6,12 +6,71 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const readline = require('node:readline');
 const Anthropic = require('@anthropic-ai/sdk');
 const { loadManifest, saveManifest, shouldSkip } = require('./manifest');
 const { buildMessages } = require('./prompt');
 const { buildMarkdown } = require('./markdown');
+const { estimateCost, countLectureTokens, formatEstimateTable, MAX_OUTPUT_TOKENS } = require('./estimate');
 
 const DEFAULT_OUTPUT_DIR = path.join(__dirname, 'output');
+
+/**
+ * promptConfirm()
+ * Prompts the user for a y/N confirmation via stdin.
+ * Returns true if user types 'y', false otherwise.
+ */
+async function promptConfirm() {
+  return new Promise(resolve => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question('Proceed with processing? [y/N]: ', answer => {
+      rl.close();
+      resolve(answer.trim().toLowerCase() === 'y');
+    });
+  });
+}
+
+/**
+ * runEstimate(pendingFiles, manifest, flags, client, inputDir)
+ * Counts tokens for all pending lectures, displays the estimate table,
+ * then either exits (--estimate), proceeds silently (--yes), or prompts.
+ */
+async function runEstimate(pendingFiles, manifest, flags, client, inputDir) {
+  const model = process.env.PMI_MODEL || 'claude-sonnet-4-6';
+  const rows = [];
+  for (const file of pendingFiles) {
+    const transcript = JSON.parse(fs.readFileSync(path.join(inputDir, file), 'utf8'));
+    const inputTokens = await countLectureTokens(client, model, transcript);
+    const outputTokens = MAX_OUTPUT_TOKENS;
+    const costDollars = estimateCost(inputTokens, model);
+    rows.push({ name: file.replace('.json', ''), inputTokens, outputTokens, costDollars });
+  }
+  const totals = {
+    inputTokens: rows.reduce((s, r) => s + r.inputTokens, 0),
+    outputTokens: rows.reduce((s, r) => s + r.outputTokens, 0),
+    costDollars: rows.reduce((s, r) => s + r.costDollars, 0),
+  };
+  console.log('\n' + formatEstimateTable(rows, totals) + '\n');
+
+  if (flags.estimate) {
+    process.exit(0);
+  }
+
+  if (flags.yes) {
+    return; // proceed without prompting
+  }
+
+  if (process.stdin.isTTY !== true) {
+    console.error('Error: confirmation required in non-interactive mode. Use --yes to skip.');
+    process.exit(1);
+  }
+
+  const confirmed = await promptConfirm();
+  if (!confirmed) {
+    console.log('Aborted.');
+    process.exit(1);
+  }
+}
 
 /**
  * processAll(inputDir, flags, client, manifestPath, outputDir)
@@ -19,7 +78,7 @@ const DEFAULT_OUTPUT_DIR = path.join(__dirname, 'output');
  * Exported for testability — the CLI main block calls this with the real Anthropic client.
  *
  * @param {string} inputDir - Directory containing transcript .json files
- * @param {{ dryRun: boolean, force: boolean }} flags - CLI flags
+ * @param {{ dryRun: boolean, force: boolean, estimate: boolean, yes: boolean }} flags - CLI flags
  * @param {Object} client - Anthropic SDK client (or mock for testing)
  * @param {string} [manifestPath] - Path to processing-state.json (defaults to __dirname)
  * @param {string} [outputDir] - Output directory for .md files (defaults to processor/output/)
@@ -43,11 +102,19 @@ async function processAll(inputDir, flags, client, manifestPath, outputDir) {
 
   // 4. Load manifest
   const manifest = loadManifest(resolvedManifest);
+
+  // 5. Filter to pending lectures for estimate
+  const pendingFiles = files.filter(f => !shouldSkip(manifest[f], flags.force));
+
+  if (pendingFiles.length > 0 && !flags.dryRun) {
+    await runEstimate(pendingFiles, manifest, flags, client, resolvedInput);
+  }
+
   const start = Date.now();
   let processed = 0, failed = 0, skipped = 0;
   const total = files.length;
 
-  // 5. Sequential batch loop
+  // 6. Sequential batch loop
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const entry = manifest[file];
@@ -91,7 +158,7 @@ async function processAll(inputDir, flags, client, manifestPath, outputDir) {
     }
   }
 
-  // 6. End-of-run summary
+  // 7. End-of-run summary
   const elapsed = Date.now() - start;
   const mins = Math.floor(elapsed / 60000);
   const secs = Math.floor((elapsed % 60000) / 1000);
@@ -106,12 +173,14 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const flags = {
     dryRun: args.includes('--dry-run'),
-    force: args.includes('--force')
+    force: args.includes('--force'),
+    estimate: args.includes('--estimate'),
+    yes: args.includes('--yes'),
   };
   const inputDir = args.filter(a => !a.startsWith('--'))[0];
 
   if (!inputDir) {
-    console.error('Usage: node processor.js <input-dir> [--dry-run] [--force]');
+    console.error('Usage: node processor.js <input-dir> [--dry-run] [--force] [--estimate] [--yes]');
     process.exit(1);
   }
 
