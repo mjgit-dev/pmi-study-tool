@@ -26,6 +26,7 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 
 ### Active
 
+<!-- Milestone v1.1 scope -->
 - [ ] PMI Exam Content Outline (ECO) domain tagging per lecture (People 42%, Process 50%, Business Environment 8%)
 - [ ] Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference
 - [ ] Processing cost estimate displayed before any batch run begins
@@ -40,6 +41,16 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 - Video downloading — transcripts only, not video content
 - Automatic Claude Projects upload — no public API exists for programmatic upload
 - Per-lecture output files — section-scoped files (8–12) perform better in Claude Projects than 100+ files
+
+## Current Milestone: v1.1 Study Intelligence
+
+**Goal:** Add ECO domain awareness, glossary, cost visibility, and adaptive hints to the study pipeline.
+
+**Target features:**
+- ECO domain tagging per lecture (People / Process / Business Environment)
+- Glossary auto-extraction — all PMI terms compiled into a searchable reference
+- Processing cost estimate displayed before any batch run
+- Weak-area hint injection — system prompt guided by user-specified struggle topics
 
 ## Context
 
@@ -76,4 +87,4 @@ Known tech debt from v1.0:
 | CommonJS modules throughout | Consistent with Anthropic SDK and Node.js toolchain; no ESM friction | ✓ Good |
 
 ---
-*Last updated: 2026-03-21 after v1.0 milestone*
+*Last updated: 2026-03-21 after v1.1 milestone start*
