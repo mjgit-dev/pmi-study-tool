@@ -203,3 +203,73 @@ processedAt: "2026-03-20T12:00:00.000Z"
     assert.ok(output.includes('| Business Environment | 1 | 8% |'), 'Missing Business Environment row with count 1');
   });
 });
+
+describe('compileAll weak-areas.json integration', () => {
+  const cleanupDirs = [];
+  const WEAK_AREAS_PATH = path.join(__dirname, '..', '..', 'weak-areas.json');
+
+  afterEach(() => {
+    for (const dir of cleanupDirs.splice(0)) {
+      try { fs.rmSync(dir, { recursive: true, force: true }); } catch (_) {}
+    }
+    try { fs.unlinkSync(WEAK_AREAS_PATH); } catch (_) {}
+  });
+
+  it('compileAll without weak-areas.json produces CLAUDE_INSTRUCTIONS.md without Focus Areas section', () => {
+    const { tmpDir, inputDir, outputDir } = createTempFixtures({
+      'lecture-a.md': FIXTURE_MD_NO_TAG('Lecture A', 'Section One'),
+    });
+    cleanupDirs.push(tmpDir);
+
+    compileAll(inputDir, outputDir, { dryRun: false });
+
+    const output = fs.readFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), 'utf8');
+    assert.ok(!output.includes('## Focus Areas'), 'Focus Areas section should be absent when no weak-areas.json');
+  });
+
+  it('compileAll with weak-areas.json produces CLAUDE_INSTRUCTIONS.md with Focus Areas section', () => {
+    const { tmpDir, inputDir, outputDir } = createTempFixtures({
+      'lecture-a.md': FIXTURE_MD_NO_TAG('Lecture A', 'Section One'),
+    });
+    cleanupDirs.push(tmpDir);
+
+    fs.writeFileSync(WEAK_AREAS_PATH, JSON.stringify({ areas: ['Risk Management', 'Stakeholder Engagement'] }), 'utf8');
+
+    compileAll(inputDir, outputDir, { dryRun: false });
+
+    const output = fs.readFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), 'utf8');
+    assert.ok(output.includes('## Focus Areas'), 'Missing ## Focus Areas heading');
+    assert.ok(output.includes('- Risk Management'), 'Missing - Risk Management bullet');
+    assert.ok(output.includes('- Stakeholder Engagement'), 'Missing - Stakeholder Engagement bullet');
+  });
+
+  it('compileAll with empty weak-areas.json areas array omits Focus Areas section', () => {
+    const { tmpDir, inputDir, outputDir } = createTempFixtures({
+      'lecture-a.md': FIXTURE_MD_NO_TAG('Lecture A', 'Section One'),
+    });
+    cleanupDirs.push(tmpDir);
+
+    fs.writeFileSync(WEAK_AREAS_PATH, JSON.stringify({ areas: [] }), 'utf8');
+
+    compileAll(inputDir, outputDir, { dryRun: false });
+
+    const output = fs.readFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), 'utf8');
+    assert.ok(!output.includes('## Focus Areas'), 'Focus Areas section should be absent when areas array is empty');
+  });
+
+  it('compileAll with malformed weak-areas.json gracefully omits Focus Areas section', () => {
+    const { tmpDir, inputDir, outputDir } = createTempFixtures({
+      'lecture-a.md': FIXTURE_MD_NO_TAG('Lecture A', 'Section One'),
+    });
+    cleanupDirs.push(tmpDir);
+
+    fs.writeFileSync(WEAK_AREAS_PATH, 'not valid json{{', 'utf8');
+
+    assert.doesNotThrow(() => {
+      compileAll(inputDir, outputDir, { dryRun: false });
+    }, 'compileAll should not throw with malformed weak-areas.json');
+
+    const output = fs.readFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), 'utf8');
+    assert.ok(!output.includes('## Focus Areas'), 'Focus Areas section should be absent when weak-areas.json is malformed');
+  });
+});

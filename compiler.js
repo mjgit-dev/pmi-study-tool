@@ -57,6 +57,21 @@ function compileAll(inputDir, outputDir, flags) {
     });
   }
 
+  // Read weak-areas.json from project root (optional config)
+  let weakAreas = null;
+  const weakAreasPath = path.join(__dirname, 'weak-areas.json');
+  if (fs.existsSync(weakAreasPath)) {
+    try {
+      const raw = fs.readFileSync(weakAreasPath, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed.areas) && parsed.areas.length > 0) {
+        weakAreas = parsed.areas;
+      }
+    } catch (_) {
+      // Malformed JSON — skip silently, compile without focus areas
+    }
+  }
+
   // 3a. Extract flashcard terms from all lectures for glossary
   const allFlashcardEntries = [];
   for (const lecture of lectures) {
@@ -95,6 +110,9 @@ function compileAll(inputDir, outputDir, flags) {
     console.log('  claude-package/handbook.md');
     console.log('  claude-package/CLAUDE_INSTRUCTIONS.md');
     console.log('  claude-package/GLOSSARY.md');
+    if (weakAreas) {
+      console.log('\nFocus areas from weak-areas.json: ' + weakAreas.join(', '));
+    }
     return { sections: orderedSections.length, lectures: lectures.length, files: [] };
   }
 
@@ -133,7 +151,7 @@ function compileAll(inputDir, outputDir, flags) {
   filesWritten.push('handbook.md');
 
   // Build and write system prompt
-  const systemPromptContent = buildSystemPrompt(hasAnyEcoTag ? ecoStats : null);
+  const systemPromptContent = buildSystemPrompt(hasAnyEcoTag ? ecoStats : null, weakAreas);
   fs.writeFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), systemPromptContent, 'utf8');
   filesWritten.push('CLAUDE_INSTRUCTIONS.md');
 
@@ -147,6 +165,9 @@ function compileAll(inputDir, outputDir, flags) {
     ? glossaryContent.split('\n').filter(l => l.startsWith('**')).length
     : 0;
   console.log('Glossary: ' + termCount + ' terms');
+  if (weakAreas) {
+    console.log('Focus areas: ' + weakAreas.length + ' topics');
+  }
 
   console.log('\nCompiled: ' + orderedSections.length + ' sections | ' + lectures.length + ' lectures | ' + filesWritten.length + ' files written');
 
