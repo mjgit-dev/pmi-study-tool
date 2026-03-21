@@ -18,11 +18,11 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 - [x] Flashcard-style content is generated for key terms and concepts — Validated in Phase 3: AI Content Generation
 - [x] Processing pipeline handles 100+ transcripts without manual intervention — Validated in Phase 2 & 3
 
-### Active
+### Validated
 
-- [ ] Output is organized as clean markdown optimized for Claude Projects upload
-- [ ] A compiled handbook (single reference document) is generated from all processed content
-- [ ] Content is organized by course section/module to mirror the Udemy structure
+- [x] Output is organized as clean markdown optimized for Claude Projects upload — Validated in Phase 4: Compilation
+- [x] A compiled handbook (single reference document) is generated from all processed content — Validated in Phase 4: Compilation
+- [x] Content is organized by course section/module to mirror the Udemy structure — Validated in Phase 4: Compilation
 
 ### Out of Scope
 
@@ -59,4 +59,4 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 | Markdown as primary output format | Claude Projects ingests markdown well; portable to other tools | — Pending |
 
 ---
-*Last updated: 2026-03-21 — Phase 3 complete: AI content generation (Practice Questions + Flashcards)*
+*Last updated: 2026-03-21 — Phase 4 complete: Compiler and Claude Projects package ready for upload*
