@@ -11,6 +11,7 @@ const { extractBody, splitNotesAndQuiz } = require('./compiler/sections');
 const { groupBySectionName, orderSections, toSlug } = require('./compiler/grouper');
 const { buildSectionFile, sectionFilename, buildHandbook } = require('./compiler/builder');
 const { buildSystemPrompt } = require('./compiler/system-prompt');
+const { extractFlashcards, buildGlossary } = require('./compiler/glossary');
 
 const INPUT_DIR = path.join(__dirname, 'processor', 'output');
 const OUTPUT_DIR = path.join(__dirname, 'claude-package');
@@ -56,6 +57,14 @@ function compileAll(inputDir, outputDir, flags) {
     });
   }
 
+  // 3a. Extract flashcard terms from all lectures for glossary
+  const allFlashcardEntries = [];
+  for (const lecture of lectures) {
+    const body = lecture.quiz; // quiz includes ## Practice Questions AND ## Flashcards
+    const entries = extractFlashcards(body);
+    allFlashcardEntries.push(...entries);
+  }
+
   // 3. Compute ECO domain stats from parsed lectures
   const ecoStats = { People: 0, Process: 0, 'Business Environment': 0 };
   let hasAnyEcoTag = false;
@@ -85,6 +94,7 @@ function compileAll(inputDir, outputDir, flags) {
     });
     console.log('  claude-package/handbook.md');
     console.log('  claude-package/CLAUDE_INSTRUCTIONS.md');
+    console.log('  claude-package/GLOSSARY.md');
     return { sections: orderedSections.length, lectures: lectures.length, files: [] };
   }
 
@@ -126,6 +136,17 @@ function compileAll(inputDir, outputDir, flags) {
   const systemPromptContent = buildSystemPrompt(hasAnyEcoTag ? ecoStats : null);
   fs.writeFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), systemPromptContent, 'utf8');
   filesWritten.push('CLAUDE_INSTRUCTIONS.md');
+
+  // Build and write glossary
+  const glossaryContent = buildGlossary(allFlashcardEntries);
+  fs.writeFileSync(path.join(outputDir, 'GLOSSARY.md'), glossaryContent, 'utf8');
+  filesWritten.push('GLOSSARY.md');
+
+  // Count deduplicated terms for logging
+  const termCount = allFlashcardEntries.length > 0
+    ? glossaryContent.split('\n').filter(l => l.startsWith('**')).length
+    : 0;
+  console.log('Glossary: ' + termCount + ' terms');
 
   console.log('\nCompiled: ' + orderedSections.length + ' sections | ' + lectures.length + ' lectures | ' + filesWritten.length + ' files written');
 

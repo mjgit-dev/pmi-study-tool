@@ -101,6 +101,94 @@ describe('compileAll ECO domain integration', () => {
     assert.ok(output.includes('# PMP Study Assistant'), 'Basic content should still be present');
   });
 
+  it('compileAll writes GLOSSARY.md with deduplicated terms from flashcards', () => {
+    // Two lectures in same section, one shared term "Project"
+    const fixture1 = `---
+lectureTitle: "Lecture One"
+sectionName: "Section A"
+processedAt: "2026-03-20T12:00:00.000Z"
+---
+
+## Key Concepts
+- Concept one
+
+## Practice Questions
+1. Question one?
+
+## Flashcards
+
+- **Project** \u2014 A temporary endeavor undertaken to create a unique product.
+
+- **Scope** \u2014 The sum of products, services, and results to be provided.
+`;
+
+    const fixture2 = `---
+lectureTitle: "Lecture Two"
+sectionName: "Section A"
+processedAt: "2026-03-20T13:00:00.000Z"
+---
+
+## Key Concepts
+- Concept two
+
+## Practice Questions
+1. Question two?
+
+## Flashcards
+
+- **Project** \u2014 A different definition that should be ignored (dedup).
+
+- **Stakeholder** \u2014 An individual or group that may affect or be affected by the project.
+`;
+
+    const { tmpDir, inputDir, outputDir } = createTempFixtures({
+      'lecture-one.md': fixture1,
+      'lecture-two.md': fixture2,
+    });
+    cleanupDirs.push(tmpDir);
+
+    compileAll(inputDir, outputDir, { dryRun: false });
+
+    const glossary = fs.readFileSync(path.join(outputDir, 'GLOSSARY.md'), 'utf8');
+    assert.ok(glossary.includes('# PMI Glossary'), 'Missing glossary heading');
+    assert.ok(glossary.includes('3 terms'), 'Should report 3 deduplicated terms');
+    assert.ok(glossary.includes('**Project**'), 'Missing Project term');
+    assert.ok(glossary.includes('**Scope**'), 'Missing Scope term');
+    assert.ok(glossary.includes('**Stakeholder**'), 'Missing Stakeholder term');
+    // Dedup check: "Project" should use first definition
+    assert.ok(glossary.includes('A temporary endeavor'), 'Should use first-occurrence definition for Project');
+    assert.ok(!glossary.includes('should be ignored'), 'Duplicate definition should not appear');
+    // Alphabetical order check: Project before Scope before Stakeholder
+    const projectIdx = glossary.indexOf('**Project**');
+    const scopeIdx = glossary.indexOf('**Scope**');
+    const stakeholderIdx = glossary.indexOf('**Stakeholder**');
+    assert.ok(projectIdx < scopeIdx, 'Project should come before Scope alphabetically');
+    assert.ok(scopeIdx < stakeholderIdx, 'Scope should come before Stakeholder alphabetically');
+  });
+
+  it('compileAll writes GLOSSARY.md with "No terms found" when no flashcard entries', () => {
+    const fixture = `---
+lectureTitle: "Bare Lecture"
+sectionName: "Section X"
+processedAt: "2026-03-20T12:00:00.000Z"
+---
+
+## Key Concepts
+- Just notes, no flashcards here
+`;
+
+    const { tmpDir, inputDir, outputDir } = createTempFixtures({
+      'bare-lecture.md': fixture,
+    });
+    cleanupDirs.push(tmpDir);
+
+    compileAll(inputDir, outputDir, { dryRun: false });
+
+    const glossary = fs.readFileSync(path.join(outputDir, 'GLOSSARY.md'), 'utf8');
+    assert.ok(glossary.includes('# PMI Glossary'), 'Missing glossary heading');
+    assert.ok(glossary.includes('No terms found'), 'Should say no terms found');
+  });
+
   it('compileAll with mixed tagged/untagged files includes ECO section with partial counts', () => {
     const { tmpDir, inputDir, outputDir } = createTempFixtures({
       'lecture-p.md': FIXTURE_MD_WITH_TAG('Lecture P', 'Section Biz', 'Business Environment'),
