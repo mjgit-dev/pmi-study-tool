@@ -39,7 +39,10 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
   2. The processor does not start any API calls until the user explicitly confirms the estimate
   3. The cost estimate accounts for the full prompt shape (system prompt + messages) — not just message tokens
   4. User can decline the estimate prompt and the batch is aborted with no charges incurred
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — TDD: estimate module (pricing, cost calc, token counting, table formatting)
+- [ ] 05-02-PLAN.md — Integrate estimate gate into processor.js with CLI flags and confirmation flow
 
 ### Phase 6: ECO Domain Tagging
 **Goal**: Every lecture in the pipeline can be classified as People, Process, or Business Environment — either during normal processing (ENHA-01) or via a dedicated re-classification pass that calls the AI only for ECO tagging on already-processed lectures without regenerating notes, questions, or flashcards (ENHA-06); the classification is persisted in the manifest and YAML frontmatter, surfaced in CLI output, and reflected in the Claude Projects study instructions
@@ -83,7 +86,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 | 2. Processing Pipeline | v1.0 | 2/2 | Complete | 2026-03-20 |
 | 3. AI Content Generation | v1.0 | 2/2 | Complete | 2026-03-21 |
 | 4. Compilation and Claude Projects Package | v1.0 | 2/2 | Complete | 2026-03-21 |
-| 5. Cost Estimation | v1.1 | 0/? | Not started | - |
+| 5. Cost Estimation | v1.1 | 0/2 | Not started | - |
 | 6. ECO Domain Tagging | v1.1 | 0/? | Not started | - |
 | 7. Glossary Extraction | v1.1 | 0/? | Not started | - |
 | 8. Weak-Area Hints | v1.1 | 0/? | Not started | - |
