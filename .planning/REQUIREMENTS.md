@@ -24,7 +24,7 @@ Requirements for v1.1 Study Intelligence. Continues from v1.0 (phases 1-4 comple
 
 ### Study Intelligence
 
-- [ ] **STDY-01**: User can list weak topics in a `weak-areas.json` config file and have them injected as a Focus Areas section in `CLAUDE_INSTRUCTIONS.md`; section is omitted when file is absent
+- [x] **STDY-01**: User can list weak topics in a `weak-areas.json` config file and have them injected as a Focus Areas section in `CLAUDE_INSTRUCTIONS.md`; section is omitted when file is absent
 
 ## v2 Requirements
 
@@ -72,7 +72,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENHA-04 | Phase 6 | Complete |
 | ENHA-05 | Phase 6 | Complete |
 | ENHA-02 | Phase 7 | Complete |
-| STDY-01 | Phase 8 | Pending |
+| STDY-01 | Phase 8 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 7 total

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
 status: unknown
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-03-21T23:22:04.842Z"
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-21T23:39:58.488Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 4
+  total_plans: 7
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,11 +19,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
 
 **Core value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
-**Current focus:** Phase 07 — glossary-extraction
+**Current focus:** Phase 08 — weak-area-hints
 
 ## Current Position
 
-Phase: 07 (glossary-extraction) — EXECUTING
+Phase: 08 (weak-area-hints) — EXECUTING
 Plan: 1 of 1
 
 ## Performance Metrics
@@ -49,6 +49,7 @@ Plan: 1 of 1
 | Phase 06 P02 | 3 | 2 tasks | 2 files |
 | Phase 06 P03 | 2 | 3 tasks | 4 files |
 | Phase 07 P01 | 119 | 2 tasks | 4 files |
+| Phase 08 P01 | 114 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting v1.1:
 - [Phase 06-03]: hasAnyEcoTag gate in compiler.js: pass ecoStats only when at least one lecture has a tag — prevents all-zero ECO table in pre-Phase-6 compiled packages
 - [Phase 07-01]: extractFlashcards operates on quiz section (not notes) — splitNotesAndQuiz places ## Flashcards inside quiz
 - [Phase 07-01]: Glossary term count logged by counting lines starting with '**' in compiled glossaryContent — accurate post-dedup
+- [Phase 08-01]: weak-areas.json is read from project root with existsSync guard and try/catch for graceful degradation — missing/empty/malformed file never crashes the compiler
+- [Phase 08-01]: weakAreas parameter in buildSystemPrompt is backward compatible — undefined/null/[] produce no Focus Areas section, existing call sites work unchanged
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ v1.1 watch items:
 
 ## Session Continuity
 
-Last session: 2026-03-21T23:19:07.266Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-03-21T23:39:58.485Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
