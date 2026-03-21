@@ -50,17 +50,28 @@ function compileAll(inputDir, outputDir, flags) {
       lectureTitle: fm.lectureTitle,
       sectionName: fm.sectionName,
       processedAt: fm.processedAt,
+      ecoTag: fm.ecoTag || null,
       notes,
       quiz
     });
   }
 
-  // 3. Group by section and determine order
+  // 3. Compute ECO domain stats from parsed lectures
+  const ecoStats = { People: 0, Process: 0, 'Business Environment': 0 };
+  let hasAnyEcoTag = false;
+  for (const lecture of lectures) {
+    if (lecture.ecoTag && ecoStats[lecture.ecoTag] !== undefined) {
+      ecoStats[lecture.ecoTag]++;
+      hasAnyEcoTag = true;
+    }
+  }
+
+  // 4. Group by section and determine order
   const groups = groupBySectionName(lectures);
   const orderedSections = orderSections(groups);
   const total = orderedSections.length;
 
-  // 4. Dry run — report what would be compiled without writing
+  // 5. Dry run — report what would be compiled without writing
   if (flags.dryRun) {
     console.log('Dry run — would compile:');
     for (const sectionName of orderedSections) {
@@ -77,7 +88,7 @@ function compileAll(inputDir, outputDir, flags) {
     return { sections: orderedSections.length, lectures: lectures.length, files: [] };
   }
 
-  // 5. Full compilation — write all output files
+  // 6. Full compilation — write all output files
   if (fs.existsSync(outputDir)) {
     console.log('Overwriting existing claude-package/');
     fs.rmSync(outputDir, { recursive: true, force: true });
@@ -112,7 +123,7 @@ function compileAll(inputDir, outputDir, flags) {
   filesWritten.push('handbook.md');
 
   // Build and write system prompt
-  const systemPromptContent = buildSystemPrompt();
+  const systemPromptContent = buildSystemPrompt(hasAnyEcoTag ? ecoStats : null);
   fs.writeFileSync(path.join(outputDir, 'CLAUDE_INSTRUCTIONS.md'), systemPromptContent, 'utf8');
   filesWritten.push('CLAUDE_INSTRUCTIONS.md');
 
