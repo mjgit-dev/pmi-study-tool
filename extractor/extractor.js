@@ -259,7 +259,8 @@
 
     // Step 9 — Duplicate check
     var storageKey = 'pmi-extracted-' + lectureTitle;
-    if (localStorage.getItem(storageKey)) {
+    var isDuplicate = !!localStorage.getItem(storageKey);
+    if (isDuplicate) {
       showToast('Already extracted: ' + lectureTitle + ' - downloading again', 'warning');
     }
 
@@ -278,10 +279,10 @@
     downloadJSON(payload, toFilename(lectureTitle));
     localStorage.setItem(storageKey, new Date().toISOString());
 
-    // Step 12 — Toast feedback
+    // Step 12 — Toast feedback (skip green if duplicate warning already shown)
     if (isLowWordCount) {
       showToast('Low word count (' + wordCount + ' words) - verify transcript', 'warning');
-    } else {
+    } else if (!isDuplicate) {
       showToast('Extracted: ' + lectureTitle + ' (' + wordCount + ' words)', 'success');
     }
 
