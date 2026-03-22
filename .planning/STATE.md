@@ -80,6 +80,29 @@ Recent decisions affecting v1.1:
 - [Phase 08-01]: weak-areas.json is read from project root with existsSync guard and try/catch for graceful degradation — missing/empty/malformed file never crashes the compiler
 - [Phase 08-01]: weakAreas parameter in buildSystemPrompt is backward compatible — undefined/null/[] produce no Focus Areas section, existing call sites work unchanged
 
+### v1.2 Candidate Checklist
+
+**Note these while using the product — bring answers back when starting v1.2.**
+
+#### Things to observe while studying
+
+- [ ] Is the compiled package actually useful for quizzing, or is something missing from the output?
+- [ ] Do the weak-area hints change how Claude responds? Are they phrased well enough to be useful?
+- [ ] Is the glossary the right shape — or do you want terms cross-referenced, grouped by domain, or linked back to lectures?
+- [ ] Does the ECO domain breakdown (People/Process/Business Environment) change how you study? Would you want to quiz by domain?
+- [ ] Are there lectures you want to re-process (better notes, more questions, different flashcard format)?
+- [ ] Does the practice question format feel realistic to the actual PMP exam style?
+- [ ] Is there anything you wish Claude Projects knew that isn't in the package?
+
+#### Known tech debt to fix in v1.2
+
+- [ ] H1 heading collision in compiled output — AI-generated H1 conflicts with section file hierarchy (visual issue, content correct)
+- [ ] No post-run actual API cost summary — only pre-run estimate shown; actual spend never reported
+- [ ] ECO domain label not shown inline next to lecture headings in section notes
+- [ ] Processor has no low-word-count guard — EXTR-03 only enforced at extraction time, not at processing time
+- [ ] Full-scale pipeline test with 100+ transcripts (only 2 tested at v1.0/v1.1)
+- [ ] ECO domain weights will change July 9, 2026 (42/50/8 → 33/41/26) — needs config update + re-tag pass
+
 ### Pending Todos
 
 None.
