@@ -1,5 +1,15 @@
 # Milestones
 
+## v1.1 Study Intelligence (Shipped: 2026-03-22)
+
+**Phases completed:** 4 phases, 7 plans, 2 tasks
+
+**Key accomplishments:**
+
+- (none recorded)
+
+---
+
 ## v1.0 MVP (Shipped: 2026-03-21)
 
 **Phases completed:** 4 phases, 8 plans
@@ -16,6 +26,7 @@
 5. `claude-package/` directory ships upload-ready for Claude Projects — full study workflow end-to-end
 
 **Known Gaps:**
+
 - EXTR-01: REQUIREMENTS.md checkbox was unchecked — tracking artifact only; extractor.js exists and was smoke-tested
 - Processor has no low-word-count guard (EXTR-03 enforced at extraction time only)
 - H1 heading collision in compiled output (content correct, visual hierarchy inverted in semantic renderers)

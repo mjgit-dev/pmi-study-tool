@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Study Intelligence
-status: unknown
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-03-21T23:42:40.397Z"
+status: milestone_complete
+stopped_at: v1.1 Study Intelligence shipped
+last_updated: "2026-03-22T00:50:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -16,15 +16,15 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-21 after v1.1 milestone start)
+See: .planning/PROJECT.md (updated 2026-03-22 after v1.1 milestone complete)
 
 **Core value:** A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
-**Current focus:** Phase 08 — weak-area-hints
+**Current focus:** Planning next milestone (v1.2)
 
 ## Current Position
 
-Phase: 08 (weak-area-hints) — EXECUTING
-Plan: 1 of 1
+Milestone v1.1 complete. All 8 phases shipped across v1.0 and v1.1.
+Ready for `/gsd:new-milestone` to define v1.2 scope.
 
 ## Performance Metrics
 

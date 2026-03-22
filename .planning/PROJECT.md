@@ -4,6 +4,8 @@
 
 A toolkit that extracts lecture transcripts from a 30+ hour Udemy PMP certification course, processes them into structured study material (notes, practice questions, flashcards) using the Anthropic API, and compiles everything into a `claude-package/` directory ready for upload to Claude Projects — where the actual studying, quizzing, and Q&A happens.
 
+The pipeline now includes ECO domain classification, a searchable PMI glossary, processing cost estimation, and adaptive focus hints.
+
 ## Core Value
 
 A learner can go from watching a Udemy lecture to quizzing themselves on that content in Claude Projects within minutes — without manual copying, formatting, or summarizing.
@@ -23,14 +25,14 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 - ✓ Processed content assembled into one markdown file per course section optimized for Claude Projects — v1.0
 - ✓ Compiled handbook generated as single reference document with linked table of contents — v1.0
 - ✓ Claude Projects system prompt file generated, instructing Claude how to quiz and assist — v1.0
+- ✓ Processing cost estimate displayed before any batch run begins — v1.1
+- ✓ PMI Exam Content Outline (ECO) domain tagging per lecture (People 42%, Process 50%, Business Environment 8%) — v1.1
+- ✓ Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference — v1.1
+- ✓ Weak-area hint injection — system prompt includes focus guidance for topics the user struggles with — v1.1
 
 ### Active
 
-<!-- Milestone v1.1 scope -->
-- [x] PMI Exam Content Outline (ECO) domain tagging per lecture (People 42%, Process 50%, Business Environment 8%) — Validated in Phase 06: eco-domain-tagging
-- [x] Glossary auto-extraction — all PMI terms across lectures compiled into a single searchable reference — Validated in Phase 07: glossary-extraction
-- [x] Processing cost estimate displayed before any batch run begins — Validated in Phase 05: cost-estimation
-- [x] Weak-area hint injection — system prompt includes guidance for Claude to focus on topics the user has struggled with — Validated in Phase 08: weak-area-hints
+<!-- Next milestone scope goes here -->
 
 ### Out of Scope
 
@@ -42,29 +44,21 @@ A learner can go from watching a Udemy lecture to quizzing themselves on that co
 - Automatic Claude Projects upload — no public API exists for programmatic upload
 - Per-lecture output files — section-scoped files (8–12) perform better in Claude Projects than 100+ files
 
-## Current Milestone: v1.1 Study Intelligence
+## Current State
 
-**Goal:** Add ECO domain awareness, glossary, cost visibility, and adaptive hints to the study pipeline.
+Shipped v1.1 with ~4,600 lines JavaScript across processor/, compiler/, and extractor/.
 
-**Target features:**
-- ECO domain tagging per lecture (People / Process / Business Environment)
-- Glossary auto-extraction — all PMI terms compiled into a searchable reference
-- Processing cost estimate displayed before any batch run
-- Weak-area hint injection — system prompt guided by user-specified struggle topics
+**Pipeline:** extractor/ (browser bookmarklet) → processor/ (Anthropic API batch) → compiler/ → `claude-package/` upload directory.
 
-## Context
+**Compiler outputs:** `CLAUDE_INSTRUCTIONS.md` (system prompt with ECO coverage + weak-area hints), section markdown files, handbook, `GLOSSARY.md`.
 
-Shipped v1.0 with ~1,523 lines JavaScript.
+**Test coverage:** 136+ tests across 3 suites (processor node:test, compiler node:test). All passing.
 
-Tech stack: Node.js (CommonJS), Anthropic SDK, `node:test` built-in test runner, browser bookmarklet.
-
-Architecture: extractor/ (browser) → processor/ (Anthropic API batch) → compiler/ → `claude-package/` upload directory.
-
-The pipeline has been verified end-to-end with 2 transcripts. Full course processing (100+ lectures) untested at scale — performance and cost per full run are unknown.
-
-Known tech debt from v1.0:
+**Known tech debt:**
 - Processor has no low-word-count guard (EXTR-03 only enforced at extraction time)
 - H1 heading collision in compiled output (AI-generated H1 conflicts with section file hierarchy — visual only, content correct)
+- No post-run actual API cost summary (deferred to future milestone)
+- ECO domain label not shown inline next to lecture headings in section notes (deferred)
 
 ## Constraints
 
@@ -85,6 +79,9 @@ Known tech debt from v1.0:
 | Single API call per lecture for all content types | Minimizes cost; notes + questions + flashcards in one `messages.create` | ✓ Good |
 | node:test built-in (no Jest) | Zero install; sufficient for unit testing pure functions | ✓ Good |
 | CommonJS modules throughout | Consistent with Anthropic SDK and Node.js toolchain; no ESM friction | ✓ Good |
+| ECO tagging via lightweight separate AI call | Avoids regenerating notes/questions/flashcards; re-tagger only pays for ECO classification | ✓ Good |
+| Glossary as pure compiler operation | Zero API cost; reads existing flashcard sections; no reprocessing | ✓ Good |
+| weak-areas.json as opt-in config file | Absent = no Focus Areas section, no error; present = injected automatically at compile time | ✓ Good |
 
 ---
-*Last updated: 2026-03-22 after Phase 08 (weak-area-hints) complete — all v1.1 milestone phases done*
+*Last updated: 2026-03-22 after v1.1 milestone (Study Intelligence) complete*
