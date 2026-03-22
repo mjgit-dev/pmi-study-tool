@@ -211,8 +211,11 @@
     }
 
     // Step 4 — Extract metadata
-    // lectureTitle: document.title format is "Lecture Name | Course Name | Udemy" (verified)
-    var lectureTitle = document.title.split(' | ')[0].trim()
+    // Primary: active sidebar item (aria-current="true") — reliable even when document.title
+    // returns the course title instead of lecture title (observed on Udemy 2026-03-22)
+    var activeTitleEl = document.querySelector('[aria-current="true"] span[data-purpose="item-title"]');
+    var lectureTitle = (activeTitleEl && activeTitleEl.textContent.trim())
+                    || document.title.split(' | ')[0].trim()
                     || document.title.split('|')[0].trim()
                     || 'Unknown Lecture';
     if (!lectureTitle) { lectureTitle = 'Unknown Lecture'; }

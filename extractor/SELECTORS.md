@@ -109,30 +109,30 @@ if (!isOpen) toggle.click();
 
 No dedicated per-lecture title element was found directly in the transcript panel area.
 
-### Primary approach: `document.title`
+### Primary approach: Active sidebar item
+
+| Property | Value |
+|---|---|
+| Verified selector | `[aria-current="true"] span[data-purpose="item-title"]` |
+| Usage | Active lecture in curriculum sidebar — reliable regardless of `document.title` format |
+| Status | VERIFIED 2026-03-22 |
+
+```javascript
+const activeTitleEl = document.querySelector('[aria-current="true"] span[data-purpose="item-title"]');
+const lectureTitle = activeTitleEl && activeTitleEl.textContent.trim();
+```
+
+### Fallback: `document.title`
 
 | Property | Value |
 |---|---|
 | Method | `document.title` |
-| Format | `"Lecture Name | Course Name | Udemy"` |
-| Status | VERIFIED (Udemy sets page title to this format) |
+| Format | `"Lecture Name | Course Name | Udemy"` (historic) or `"Course: ... | Udemy"` (observed 2026-03-22) |
+| Status | UNRELIABLE — Udemy sometimes returns course title instead of lecture title |
 
 ```javascript
-// Extract lecture name from page title
+// Only use as fallback if sidebar selector fails
 const lectureTitle = document.title.split(' | ')[0].trim();
-```
-
-### Fallback: Active item in sidebar
-
-| Property | Value |
-|---|---|
-| Verified selector | `span[data-purpose="item-title"]` |
-| Usage | Find the active/highlighted lecture in the curriculum sidebar |
-| Status | VERIFIED |
-
-```javascript
-// Sidebar shows lecture names — find the active one
-document.querySelector('span[data-purpose="item-title"]')
 ```
 
 ### Course header title
